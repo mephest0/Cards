@@ -107,6 +107,10 @@ public class MainActivity extends ActionBarActivity {
         bluetoothAdapter.startDiscovery();
     }
 
+    public void startNewHost(String name) {
+        //TODO
+    }
+
     public void checkIfBluetoothEnabled() {
         if (!bluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
