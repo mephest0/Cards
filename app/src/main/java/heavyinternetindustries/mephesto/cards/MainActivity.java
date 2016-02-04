@@ -124,4 +124,8 @@ public class MainActivity extends ActionBarActivity {
         unregisterReceiver(mReceiver);
         super.onPause();
     }
+
+    public void bacon(){
+        System.out.println("tasty tasty");
+    }
 }
