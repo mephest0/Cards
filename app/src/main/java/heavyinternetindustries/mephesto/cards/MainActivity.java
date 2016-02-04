@@ -126,6 +126,6 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void bacon(){
-        System.out.println("tasty tasty");
+        System.out.println("tasty tasty for fuck sake");
     }
 }
