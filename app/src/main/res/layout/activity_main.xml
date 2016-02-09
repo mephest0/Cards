@@ -31,17 +31,31 @@
         <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Scan!"
-            android:onClick="scanForDevices"
+            android:text="Enable"
+            android:onClick="enable"
             android:id="@+id/scan"
             android:enabled="true" />
 
         <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:text="isEnabled?"
+            android:onClick="getIsEnabled"
+            android:id="@+id/button" />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
             android:text="Make discoverable"
             android:onClick="makeDiscoverable"
-            android:id="@+id/button" />
+            android:id="@+id/discoverablebutton" />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Scan"
+            android:onClick="startLEScan"
+            android:id="@+id/scanbutton" />
 
         <TextView
             android:id="@+id/debug_messages"

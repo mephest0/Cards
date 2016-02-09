@@ -137,4 +137,8 @@ public class BluetoothManager {
             }
         }
     };
+
+    public void initiateServerSocket() {
+
+    }
 }

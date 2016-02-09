@@ -1,11 +1,14 @@
 package heavyinternetindustries.mephesto.cards;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
+import android.os.ParcelUuid;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Pair;
@@ -24,19 +27,23 @@ public class MainActivity extends ActionBarActivity {
     TextView debMessages;
 
     BluetoothManager bluetoothManager;
+    BLEManager b4manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Only request permission on Marshmallow
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1234);
+        }
+
         //find TextView
         debMessages = (TextView) findViewById(R.id.debug_messages);
 
-
-        bluetoothManager = new BluetoothManager(this);
-
         messages = new Stack<>();
+        b4manager = new BLEManager(this);
     }
 
     public void submitName(View view) {
@@ -46,46 +53,47 @@ public class MainActivity extends ActionBarActivity {
         if (name.length() == 0) {
             toastText = "No name entered";
         } else {
-            toastText = "Hi, " + name + "!";
+            toastText = "Setting name to: " + name;
         }
 
+        b4manager.setName(name);
         Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_LONG);
         toast.show();
     }
 
     public void makeDiscoverable(View view) {
-        bluetoothManager.makeDiscoverable();
+        b4manager.makeDiscoverable();
     }
 
     public void scanForDevices(View view) {
-        checkIfBluetoothEnabled();
-
-        if (!bluetoothManager.isScanning()) {
-            bluetoothManager.scanForDevices();
-        } else {
-            System.out.println("Printing devices:");
-            debMessages.setText("");
-            String devList = "";
-            for (BluetoothDevice device : bluetoothManager.getDiscoveredDevices()) {
-                System.out.println(" + " + device.getName());
-                devList += device.getName() + "\n";
-            }
-            debMessages.setText(devList);
-            System.out.println("+");
-        }
     }
 
     public void checkIfBluetoothEnabled() {
-        bluetoothManager.checkIfBluetoothEnabled();
     }
 
     @Override
     public void onPause() {
+        System.out.println("onPause()");
         super.onPause();
-        bluetoothManager.onPause();
     }
 
     public void toast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    public void getIsEnabled(View view) {
+        System.out.println("getIsEnabled()");
+
+        System.out.println(": " + b4manager.isEnabled());
+    }
+
+    public void enable(View view) {
+        System.out.println("enable()");
+
+        b4manager.enable();
+    }
+
+    public void startLEScan(View view) {
+        b4manager.startScan();
     }
 }
