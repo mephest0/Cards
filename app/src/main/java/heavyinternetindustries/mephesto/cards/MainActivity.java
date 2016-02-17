@@ -25,6 +25,7 @@ import java.util.Stack;
 public class MainActivity extends ActionBarActivity {
     Stack<Pair<String, String>> messages;
     TextView debMessages;
+    String name = "device9000";
 
     BluetoothManager bluetoothManager;
     BLEManager b4manager;
@@ -47,7 +48,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void submitName(View view) {
-        String name = ((EditText) findViewById(R.id.bt_name_input)).getText().toString();
+        name = ((EditText) findViewById(R.id.bt_name_input)).getText().toString();
         String toastText;
 
         if (name.length() == 0) {
@@ -95,5 +96,11 @@ public class MainActivity extends ActionBarActivity {
 
     public void startLEScan(View view) {
         b4manager.startScan();
+    }
+
+    public void openGates(View view) {
+        System.out.println("Create new server");
+
+        b4manager.createServer(name);
     }
 }
