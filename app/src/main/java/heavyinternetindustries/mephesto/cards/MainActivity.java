@@ -1,106 +1,149 @@
 package heavyinternetindustries.mephesto.cards;
 
-import android.Manifest;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Build;
-import android.os.ParcelUuid;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Pair;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Random;
-import java.util.Stack;
+
+import heavyinternetindustries.mephesto.cards.wifip2p.WiFiPPPManager;
+import heavyinternetindustries.mephesto.cards.wifip2p.WiFiPPPService;
 
 public class MainActivity extends ActionBarActivity {
-    Stack<Pair<String, String>> messages;
+    ArrayList<CardsMessage> messages;
     TextView debMessages;
     String name = "device9000";
-
-    BluetoothManager bluetoothManager;
-    BLEManager b4manager;
+    WiFiPPPManager wifiManager;
+    WiFiPPPService service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //Only request permission on Marshmallow
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1234);
-        }
+        messages = new ArrayList<>();
+        service = new WiFiPPPService();
 
         //find TextView
         debMessages = (TextView) findViewById(R.id.debug_messages);
 
-        messages = new Stack<>();
-        b4manager = new BLEManager(this);
+        wifiManager = new WiFiPPPManager(this);
+
+        setServerStatus(false);
     }
 
-    public void submitName(View view) {
-        name = ((EditText) findViewById(R.id.bt_name_input)).getText().toString();
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        registerReceiver(wifiManager.getBR(), wifiManager.getIF());
+        System.out.println("starting service");
+        startService(new Intent(this, WiFiPPPService.class));
+    }
+
+    public void sendText(View view) {
+        String text = ((EditText) findViewById(R.id.bt_name_input)).getText().toString();
         String toastText;
 
-        if (name.length() == 0) {
-            toastText = "No name entered";
+        if (text.length() == 0) {
+            toastText = "No text entered";
         } else {
-            toastText = "Setting name to: " + name;
+            toastText = "Sending: " + text;
         }
 
-        b4manager.setName(name);
         Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_LONG);
         toast.show();
-    }
 
-    public void makeDiscoverable(View view) {
-        b4manager.makeDiscoverable();
-    }
-
-    public void scanForDevices(View view) {
-    }
-
-    public void checkIfBluetoothEnabled() {
+        wifiManager.sendToOwner(text);
     }
 
     @Override
     public void onPause() {
         System.out.println("onPause()");
         super.onPause();
+
+        unregisterReceiver(wifiManager.getBR());
     }
 
     public void toast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    public void getIsEnabled(View view) {
-        System.out.println("getIsEnabled()");
-
-        System.out.println(": " + b4manager.isEnabled());
+    public void discoverPeers(View view) {
+        wifiManager.discoverPeers();
     }
 
-    public void enable(View view) {
-        System.out.println("enable()");
+    public void clickedDiscoverableSwitch(View view) {
+        System.out.println("clicked discoverable");
+        Switch toggle = (Switch) view;
 
-        b4manager.enable();
+        toggle.setEnabled(false);
+
+        if (toggle.isChecked()) {
+            wifiManager.discoverPeers();
+        } else {
+            wifiManager.stopDiscovery();
+        }
     }
 
-    public void startLEScan(View view) {
-        b4manager.startScan();
+    public void setDiscoverableSwitch(boolean onOff) {
+        Switch toggle = (Switch) findViewById(R.id.switch1);
+        toggle.setChecked(onOff);
+        toggle.setEnabled(true);
     }
 
-    public void openGates(View view) {
-        System.out.println("Create new server");
+    public void setConnectButtonEnabled(boolean enabled) {
+        findViewById(R.id.connectFirstButton).setEnabled(enabled);
+    }
 
-        b4manager.createServer(name);
+    public void connectToFirst(View view) {
+        System.out.println("Connect to first");
+        wifiManager.connectToFirst();
+    }
+
+    public void setDebugBox(String text) {
+        debMessages.setText(text);
+    }
+
+    public void setServerStatus(boolean b) {
+        TextView tv = (TextView) findViewById(R.id.server_status);
+        tv.setText(b ? "listening" : "not listening");
+    }
+
+    public void executeTask(AsyncTask task) {
+        task.execute();
+    }
+
+    public void incommingMessage(CardsMessage cardsMessage) {
+        System.out.println("incomming message:");
+        System.out.println(cardsMessage);
+        if (cardsMessage.getMessage().equals(WiFiPPPManager.GET_USER_FRIENDLY_NAME)) {
+            System.out.println(".name request");
+            wifiManager.sendMessage(cardsMessage.getOtherEnd(), WiFiPPPManager.HERES_USER_FRIENDLY_NAME + "myname");
+        } else if (cardsMessage.getMessage().startsWith(WiFiPPPManager.HERES_USER_FRIENDLY_NAME)) {
+            System.out.println("got user name: " + cardsMessage.getMessage());
+            String inName = cardsMessage.getMessage().replace(WiFiPPPManager.HERES_USER_FRIENDLY_NAME, "");
+            System.out.println(" : name: " + inName);
+        }
+
+        else {
+            messages.add(cardsMessage);
+        }
+    }
+
+    public void resetConnections(View view) {
+        wifiManager.disconnect();
+        wifiManager.clearList();
+        wifiManager.stopDiscovery();
+    }
+
+    public void createNewGame(View view) {
+        wifiManager.discoverPeers();
+
     }
 }
