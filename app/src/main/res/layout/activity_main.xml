@@ -14,11 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/server_status"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
-
         <EditText
             android:id="@+id/bt_name_input"
             android:hint="Name"
@@ -34,24 +29,6 @@
             android:onClick="sendText"
             android:id="@+id/confirm_name" />
 
-        <Switch
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Discoverable"
-            android:id="@+id/switch1"
-            android:checked="false"
-            android:clickable="true"
-            android:onClick="clickedDiscoverableSwitch"
-            android:enabled="true" />
-
-        <Button
-            android:enabled="false"
-            android:text="Connect to first in list"
-            android:onClick="connectToFirst"
-            android:id="@+id/connectFirstButton"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
-
         <Button
             android:text="Reset connections"
             android:onClick="resetConnections"
@@ -64,10 +41,19 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" />
 
-        <TextView
-            android:id="@+id/debug_messages"
-            android:layout_width="wrap_content"
+        <Switch
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Hello World!" />
+            android:text="Discovering"
+            android:id="@+id/switch1"
+            android:checked="false"
+            android:clickable="true"
+            android:onClick="clickedDiscoverableSwitch"
+            android:enabled="true" />
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/host_list" />
     </LinearLayout>
 </RelativeLayout>

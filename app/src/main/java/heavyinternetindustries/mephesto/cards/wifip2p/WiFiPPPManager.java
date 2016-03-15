@@ -1,19 +1,17 @@
 package heavyinternetindustries.mephesto.cards.wifip2p;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
-import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.AsyncTask;
 
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.util.ArrayList;
 
+import heavyinternetindustries.mephesto.cards.CardsMessage;
 import heavyinternetindustries.mephesto.cards.MainActivity;
 
 /**
@@ -23,6 +21,7 @@ public class WiFiPPPManager {
     public static final int SERVER_PORT = 9002;
     public static final String GET_USER_FRIENDLY_NAME = "getUserFriendlyName";
     public static final String HERES_USER_FRIENDLY_NAME = "heresUserFriendlyName";
+    private static final String REGISTER_MESSAGE = "REGISTER";
 
     MainActivity activity;
     WifiBroadcastReceiver broadcastReceiver = null;
@@ -95,24 +94,18 @@ public class WiFiPPPManager {
 
     public void devicesChanged(WifiP2pDeviceList peers) {
         System.out.println("Devices changed");
-        for (WifiP2pDevice device : peers.getDeviceList()) {
-            boolean inList = false;
-            for (WifiP2pDevice alreadyDiscovered : pppDevices) {
-                if (device.equals(alreadyDiscovered)) inList = true;
-            }
-            if (!inList) addUndiscoveredDevice(device);
+        pppDevices.clear();
+        pppDevices.addAll(peers.getDeviceList());
+        activity.wifiDevices.clear();
+        activity.wifiDevices.addAll(peers.getDeviceList());
+        activity.invalidateHostList();
+
+        if (pppDevices.isEmpty()) {
+            System.out.println("No devices");
+        } else {
+            System.out.println("List of devices:");
+            for (WifiP2pDevice device : pppDevices) System.out.println(" : " + device.deviceName);
         }
-        if (pppDevices.isEmpty()) activity.setConnectButtonEnabled(false);
-        else activity.setConnectButtonEnabled(true);
-    }
-
-    public void addUndiscoveredDevice(WifiP2pDevice device) {
-        pppDevices.add(device);
-
-        System.out.println("found new device! :)");
-        System.out.println(" name: " + device.deviceName);
-//        System.out.println(" -" + device.toString());
-        System.out.println(" now has: " + pppDevices.size() + " devices in list");
     }
 
     private void connectAndSend(WifiP2pDevice device) {
@@ -132,29 +125,25 @@ public class WiFiPPPManager {
         });
     }
 
-    public void connectToFirst() {
-        if (!pppDevices.isEmpty()) {
-            System.out.println("Connecting to first");
-            WifiP2pDevice device = pppDevices.get(0);
-            System.out.println(" name: " + device.deviceName);
+    public void connectTo(WifiP2pDevice device) {
+        System.out.println("WiFiPPPManager.connectTo");
+        System.out.println(" name: " + device.deviceName);
 
-            WifiP2pConfig config = new WifiP2pConfig();
-            config.deviceAddress = device.deviceAddress;
+        WifiP2pConfig config = new WifiP2pConfig();
+        config.deviceAddress = device.deviceAddress;
 
-            p2pManager.connect(channel, config, new WifiP2pManager.ActionListener() {
-                @Override
-                public void onSuccess() {
-                    System.out.println("connected");
-                }
+        p2pManager.connect(channel, config, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                System.out.println("connecting...");
+            }
 
-                @Override
-                public void onFailure(int reason) {
-                    System.out.printf("connection failure");
-                }
-            });
-        } else {
-            System.out.println("No devices to connect to");
-        }
+            @Override
+            public void onFailure(int reason) {
+                System.out.printf("failure connecting.. " + reason);
+            }
+        });
+
     }
 
     public void sendToOwner(String text) {
@@ -183,5 +172,15 @@ public class WiFiPPPManager {
         DummyMessageClientTask task = new DummyMessageClientTask(message, host);
 
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    public void incommingMessage(CardsMessage message) {
+        if (message.getRawMessage().equals(REGISTER_MESSAGE)) {
+            //first connection
+
+            //check if already registered
+        } else {
+            //business as usual
+        }
     }
 }

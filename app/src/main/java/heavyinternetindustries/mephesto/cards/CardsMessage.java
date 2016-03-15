@@ -16,7 +16,7 @@ public class CardsMessage {
     private String otherEnd;
     private final int manager;
     private int tick;
-    private String state, changes, extra;
+    private String state, changes, extra, raw;
 
     /**
      * Incommign message
@@ -31,6 +31,8 @@ public class CardsMessage {
         state = parseState(message);
         changes = parseChange(message);
         extra = parseExtra(message);
+
+        raw = message;
 
         if (tick == -1 || state == null || changes == null || extra == null) {
             System.out.println("MALFORMED PACKAGE :(");
@@ -149,5 +151,9 @@ public class CardsMessage {
 
     public String getExtra() {
         return extra;
+    }
+
+    public String getRawMessage() {
+        return raw;
     }
 }

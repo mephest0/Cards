@@ -58,7 +58,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
                 manager.requestPeers(channel, peerListListener);
             }
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
-            // Respond to new connection or disconnections
+            // Respond to new connection or disconnects
             System.out.println("Connection changed");
 
             if (manager == null) {
