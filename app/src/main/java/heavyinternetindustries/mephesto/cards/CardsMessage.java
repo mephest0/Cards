@@ -10,13 +10,14 @@ public class CardsMessage {
     public static final String ARG_STATE = "STATE";
     public static final String ARG_CHANGE = "CHANGE";
     public static final String ARG_EXTRA = "EXTRA";
+    public static final String ARG_USERNAME = "USERNAME";
     public static final String ARG_CONTENT_START = "[";
     public static final String ARG_CONTENT_END = "]";
     public static final String ARG_SEPARATOR = ";";
     private String otherEnd;
     private final int manager;
     private int tick;
-    private String state, changes, extra, raw;
+    private String state, changes, extra, raw, senderUsername;
 
     /**
      * Incommign message
@@ -31,6 +32,7 @@ public class CardsMessage {
         state = parseState(message);
         changes = parseChange(message);
         extra = parseExtra(message);
+        senderUsername = parseUserName(message);
 
         raw = message;
 
@@ -72,24 +74,25 @@ public class CardsMessage {
     public String getMessage() {
         StringBuilder builder = new StringBuilder();
 
-        builder.append(ARG_TICK + ARG_CONTENT_START);
-        builder.append(tick);
-        builder.append(ARG_CONTENT_END);
-        builder.append(ARG_SEPARATOR);
-        builder.append(ARG_STATE + ARG_CONTENT_START);
-        builder.append(state);
-        builder.append(ARG_CONTENT_END);
-        builder.append(ARG_SEPARATOR);
-        builder.append(ARG_CHANGE + ARG_CONTENT_START);
-        builder.append(changes);
-        builder.append(ARG_CONTENT_END);
-        builder.append(ARG_SEPARATOR);
-        builder.append(ARG_EXTRA + ARG_CONTENT_START);
-        builder.append(extra);
-        builder.append(ARG_CONTENT_END);
-        builder.append(ARG_SEPARATOR);
+        builder.append(encapsulate(ARG_TICK, tick + ""));
+        builder.append(encapsulate(ARG_STATE, state));
+        builder.append(encapsulate(ARG_CHANGE, changes));
+        builder.append(encapsulate(ARG_EXTRA, extra));
+        builder.append(encapsulate(ARG_USERNAME, senderUsername));
 
         return builder.toString();
+    }
+
+    private static String encapsulate(String arg, String data) {
+        StringBuilder ret = new StringBuilder();
+
+        ret.append(arg);
+        ret.append(ARG_CONTENT_START);
+        ret.append(data);
+        ret.append(ARG_CONTENT_END);
+        ret.append(ARG_SEPARATOR);
+
+        return ret.toString();
     }
 
     @Override
@@ -100,14 +103,18 @@ public class CardsMessage {
     }
 
     private static int parseTick(String message) {
-        String res = parseContents(message, ARG_TICK);
+        String tickString = parseContents(message, ARG_TICK);
 
-        if (res != null) {
+        int ret = -1;
+
+        if (tickString != null) {
             try {
-                return Integer.parseInt(res);
-            } catch (Exception e) {}
+                ret = Integer.parseInt(tickString);
+            } catch (Exception e) {
+                System.err.println("Error parsing \"tick\"-value: " + tickString);
+            }
         }
-        return -1;
+        return ret;
     }
 
     private static String parseState(String message) {
@@ -120,6 +127,10 @@ public class CardsMessage {
 
     private static String parseExtra(String message) {
         return parseContents(message, ARG_EXTRA);
+    }
+
+    private static String parseUserName(String message) {
+        return parseContents(message, ARG_USERNAME);
     }
 
     private static String parseContents(String message, String arg) {
@@ -153,7 +164,15 @@ public class CardsMessage {
         return extra;
     }
 
+    public String getUsername() {
+        return senderUsername;
+    }
+
     public String getRawMessage() {
         return raw;
+    }
+
+    public int getManager() {
+        return manager;
     }
 }

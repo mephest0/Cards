@@ -26,12 +26,12 @@
             android:layout_height="wrap_content"
             android:text="OK"
             android:enabled="true"
-            android:onClick="sendText"
+            android:onClick="onClickOk"
             android:id="@+id/confirm_name" />
 
         <Button
-            android:text="Reset connections"
-            android:onClick="resetConnections"
+            android:text="Disable WiFi"
+            android:onClick="onClickDisableWifi"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" />
 
@@ -48,7 +48,7 @@
             android:id="@+id/switch1"
             android:checked="false"
             android:clickable="true"
-            android:onClick="clickedDiscoverableSwitch"
+            android:onClick="clickedDiscoveringSwitch"
             android:enabled="true" />
 
         <ListView

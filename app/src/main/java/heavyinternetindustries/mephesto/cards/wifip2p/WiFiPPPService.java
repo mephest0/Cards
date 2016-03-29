@@ -22,6 +22,11 @@ import heavyinternetindustries.mephesto.cards.MainActivity;
 public class WiFiPPPService extends IntentService {
     private final WiFiPPPManager manager;
 
+    public WiFiPPPService() {
+        super("Cards WiFi server (zero argument constructor)");
+        manager = null;
+    }
+
     public WiFiPPPService(WiFiPPPManager manager) {
         super("Cards WiFi server");
         this.manager = manager;

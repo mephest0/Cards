@@ -2,7 +2,6 @@ package heavyinternetindustries.mephesto.cards;
 
 import android.content.Intent;
 import android.net.wifi.p2p.WifiP2pDevice;
-import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,10 +9,10 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import heavyinternetindustries.mephesto.cards.wifip2p.WiFiPPPManager;
 import heavyinternetindustries.mephesto.cards.wifip2p.WiFiPPPService;
@@ -22,10 +21,10 @@ public class MainActivity extends ActionBarActivity {
     ArrayList<CardsMessage> messages;
     public ArrayList<WifiP2pDevice> wifiDevices;
     ListView hostList;
-    String name = "device9000";
     WiFiPPPManager wifiManager;
     WiFiPPPService service;
     HostListAdapter hostListAdapter;
+    Hashtable<String, Integer> userManagers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +34,8 @@ public class MainActivity extends ActionBarActivity {
         wifiManager = new WiFiPPPManager(this);
         service = new WiFiPPPService(wifiManager);
         wifiDevices = new ArrayList<>();
+
+        userManagers = new Hashtable<>();
 
         hostListAdapter = new HostListAdapter(this);
         hostList = (ListView) findViewById(R.id.host_list);
@@ -49,9 +50,6 @@ public class MainActivity extends ActionBarActivity {
                 wifiManager.connectTo(wifiDevices.get(position));
             }
         });
-
-        //find TextView
-
     }
 
     @Override
@@ -65,40 +63,39 @@ public class MainActivity extends ActionBarActivity {
         wifiManager.discoverPeers();
     }
 
-    public void sendText(View view) {
-        String text = ((EditText) findViewById(R.id.bt_name_input)).getText().toString();
-        String toastText;
-
-        if (text.length() == 0) {
-            toastText = "No text entered";
-        } else {
-            toastText = "Sending: " + text;
-        }
-
-        Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_LONG);
-        toast.show();
-
-        wifiManager.sendToOwner(text);
-    }
-
     @Override
     public void onPause() {
         System.out.println("onPause()");
         super.onPause();
 
         unregisterReceiver(wifiManager.getBR());
+        wifiManager.stopDiscovery();
+    }
+
+    /**
+     * for debug purposes only
+     * @param view View
+     */
+    public void onClickOk(View view) {
+        String text = ((EditText) findViewById(R.id.bt_name_input)).getText().toString();
+        String toastText;
+
+        if (text.length() == 0) {
+            toastText = "No text entered";
+        } else {
+            toastText = "Toasting: " + text;
+        }
+
+        Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_LONG);
+        toast.show();
     }
 
     public void toast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    public void discoverPeers(View view) {
-        wifiManager.discoverPeers();
-    }
-
-    public void clickedDiscoverableSwitch(View view) {
-        System.out.println("clicked discoverable");
+    public void clickedDiscoveringSwitch(View view) {
+        System.out.println("MainActivity.clickedDiscoveringSwitch");
         Switch toggle = (Switch) view;
 
         toggle.setEnabled(false);
@@ -116,28 +113,27 @@ public class MainActivity extends ActionBarActivity {
         toggle.setEnabled(true);
     }
 
-    public void executeTask(AsyncTask task) {
-        task.execute();
-    }
-
     public void incommingMessage(CardsMessage cardsMessage) {
         System.out.println("incomming message:");
         System.out.println(cardsMessage);
-        if (cardsMessage.getMessage().equals(WiFiPPPManager.GET_USER_FRIENDLY_NAME)) {
-            System.out.println(".name request");
-            wifiManager.sendMessage(cardsMessage.getOtherEnd(), WiFiPPPManager.HERES_USER_FRIENDLY_NAME + "myname");
-        } else if (cardsMessage.getMessage().startsWith(WiFiPPPManager.HERES_USER_FRIENDLY_NAME)) {
-            System.out.println("got user name: " + cardsMessage.getMessage());
-            String inName = cardsMessage.getMessage().replace(WiFiPPPManager.HERES_USER_FRIENDLY_NAME, "");
-            System.out.println(" : name: " + inName);
+
+        if (!userManagers.containsKey(cardsMessage.getUsername())) {
+            userManagers.put(cardsMessage.getUsername(), cardsMessage.getManager());
         }
 
-        else {
-            messages.add(cardsMessage);
+        messages.add(cardsMessage);
+    }
+
+    public void sendMessage(CardsMessage cardsMessage) {
+        String uName = cardsMessage.getUsername();
+
+        if (userManagers.containsKey(uName)) {
+            int link = userManagers.get(uName);
+            if (link == CardsMessage.MANAGER_WIFIP2P) wifiManager.sendMessage(cardsMessage);
         }
     }
 
-    public void resetConnections(View view) {
+    public void onClickDisableWifi(View view) {
         wifiManager.disconnect();
         wifiManager.clearList();
         wifiManager.stopDiscovery();

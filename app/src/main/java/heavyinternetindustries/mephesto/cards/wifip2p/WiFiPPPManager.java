@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import heavyinternetindustries.mephesto.cards.CardsMessage;
 import heavyinternetindustries.mephesto.cards.MainActivity;
@@ -19,9 +20,6 @@ import heavyinternetindustries.mephesto.cards.MainActivity;
  */
 public class WiFiPPPManager {
     public static final int SERVER_PORT = 9002;
-    public static final String GET_USER_FRIENDLY_NAME = "getUserFriendlyName";
-    public static final String HERES_USER_FRIENDLY_NAME = "heresUserFriendlyName";
-    private static final String REGISTER_MESSAGE = "REGISTER";
 
     MainActivity activity;
     WifiBroadcastReceiver broadcastReceiver = null;
@@ -30,6 +28,7 @@ public class WiFiPPPManager {
     WifiP2pManager.Channel channel;
     ArrayList<WifiP2pDevice> pppDevices;
     InetAddress ownerAddress;
+    Hashtable<String, String> userAdresses;
 
     public WiFiPPPManager(MainActivity activity) {
         this.activity = activity;
@@ -37,7 +36,8 @@ public class WiFiPPPManager {
         channel = p2pManager.initialize(activity, activity.getMainLooper(), null);
         pppDevices = new ArrayList<>();
         ownerAddress = null;
-}
+        userAdresses = new Hashtable<>();
+    }
 
     public WifiBroadcastReceiver getBR() {
         if (broadcastReceiver == null) {
@@ -108,6 +108,7 @@ public class WiFiPPPManager {
         }
     }
 
+    /*
     private void connectAndSend(WifiP2pDevice device) {
         WifiP2pConfig config = new WifiP2pConfig();
         config.deviceAddress = device.deviceAddress;
@@ -124,6 +125,7 @@ public class WiFiPPPManager {
             }
         });
     }
+    */
 
     public void connectTo(WifiP2pDevice device) {
         System.out.println("WiFiPPPManager.connectTo");
@@ -141,23 +143,10 @@ public class WiFiPPPManager {
             @Override
             public void onFailure(int reason) {
                 System.out.printf("failure connecting.. " + reason);
+                //TODO reasons
             }
         });
 
-    }
-
-    public void sendToOwner(String text) {
-        if (ownerAddress != null) {
-            System.out.println("initiate sending: " + text + " | to : " + ownerAddress);
-
-            sendMessage(ownerAddress.getHostAddress(), text);
-        } else {
-            System.out.println("no one to send to :(");
-        }
-    }
-
-    public void setOwnerAddress(InetAddress address) {
-        ownerAddress = address;
     }
 
     public void disconnect() {
@@ -168,19 +157,34 @@ public class WiFiPPPManager {
         pppDevices.clear();
     }
 
-    public void sendMessage(String host, String message) {
+    public void sendMessage(CardsMessage message) {
+        String host = null;
+        String uName = message.getUsername();
+
+        if (userAdresses.containsKey(uName)) {
+            host = userAdresses.get(uName);
+        }
+
+        if (host != null) {
+            sendMessage(host, message.getRawMessage());
+        } else {
+            //username not registered
+        }
+    }
+
+    private void sendMessage(String host, String message) {
         DummyMessageClientTask task = new DummyMessageClientTask(message, host);
 
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public void incommingMessage(CardsMessage message) {
-        if (message.getRawMessage().equals(REGISTER_MESSAGE)) {
-            //first connection
+        System.out.println("message = " + message);
 
-            //check if already registered
-        } else {
-            //business as usual
+        if (!userAdresses.containsKey(message.getUsername())) {
+            userAdresses.put(message.getUsername(), message.getOtherEnd());
         }
+
+        activity.incommingMessage(message);
     }
 }

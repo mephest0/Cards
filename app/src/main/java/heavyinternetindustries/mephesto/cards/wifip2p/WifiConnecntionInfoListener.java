@@ -18,6 +18,5 @@ public class WifiConnecntionInfoListener implements WifiP2pManager.ConnectionInf
         System.out.println("---MESSAGES FROM THE INTERTUBES:");
         System.out.println(info);
         System.out.println("---TRANSMISSION ENDED");
-        manager.setOwnerAddress(info.groupOwnerAddress);
     }
 }
