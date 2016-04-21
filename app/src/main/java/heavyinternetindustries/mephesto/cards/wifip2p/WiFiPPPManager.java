@@ -107,7 +107,11 @@ public class WiFiPPPManager {
             System.out.println("No devices");
         } else {
             System.out.println("List of devices:");
-            for (WifiP2pDevice device : pppDevices) System.out.println(" : " + device.deviceName);
+            for (WifiP2pDevice device : pppDevices) {
+                System.out.println(" : " + device.deviceName);
+                System.out.println("  : " + device.deviceAddress);
+            }
+
         }
     }
 
@@ -145,8 +149,10 @@ public class WiFiPPPManager {
 
             @Override
             public void onFailure(int reason) {
-                System.out.printf("failure connecting.. " + reason);
-                //TODO reasons
+                System.out.println("failure connecting.. " + reason);
+                if (reason == 0) System.out.println("ERROR");
+                if (reason == 2) System.out.println("BUSY");
+                if (reason == 1) System.out.println("P2P UNSUPPORTED");
             }
         });
 
@@ -162,40 +168,51 @@ public class WiFiPPPManager {
 
     public void sendMessage(CardsMessage message) {
         String host = null;
-        String uName = message.getUsername();
+        String uName = message.getOtherEndUsername();
+        System.out.println("WiFiPPPManager.sendMessage to: " + uName);
 
         if (userAdresses.containsKey(uName)) {
             host = userAdresses.get(uName);
         }
 
         if (host != null) {
-            sendMessage(host, message.getRawMessage());
+            System.out.println("Host address(!): " + host);
+            message.prepareForSending();
+            sendMessage(host, message.getMessage());
         } else {
             System.out.println("Username not registered");
         }
     }
 
     private void sendMessage(String host, String message) {
+        System.out.println("WiFiPPPManager.sendMessage to: " + host);
         DummyMessageClientTask task = new DummyMessageClientTask(message, host.replace("/", "").trim());
 
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public void incommingMessage(CardsMessage message) {
-        System.out.println("message = " + message);
+        String senderUsername = message.getOtherEndUsername();
+        System.out.println("WiFiPPPManager.incommingMessage from: " + senderUsername);
 
-        if (!userAdresses.containsKey(message.getUsername())) {
-            userAdresses.put(message.getUsername(), message.getOtherEnd());
+        if (senderUsername != null && !userAdresses.containsKey(senderUsername)) {
+            userAdresses.put(senderUsername, message.getOtherEndHost());
+
+            System.out.println("added username: " + senderUsername + " userAdresses.size() = " + userAdresses.size());;
         }
 
         activity.incomingMessage(message);
     }
 
+    /**
+     * Network info changed
+     * @param info
+     */
     public void setInfo(WifiP2pInfo info) {
         System.out.println("WiFiPPPManager.setInfo");
         System.out.println("info.groupOwnerAddress.toString() = " + info.groupOwnerAddress.toString());
         sendMessage(info.groupOwnerAddress.toString(),
-                CardsMessage.registerNewDeviceMessage(info.groupOwnerAddress.toString()));
+                CardsMessage.registerNewDeviceMessageAsString(info.groupOwnerAddress.toString()));
 
     }
 

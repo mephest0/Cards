@@ -14,19 +14,21 @@ public class CardsMessage {
     public static final String ARG_CONTENT_START = "::[";
     public static final String ARG_CONTENT_END = "]::";
     public static final String ARG_SEPARATOR = ";;;;";
-    private String otherEnd;
+
+    private String otherEndUsername, otherEndHost;
     private final int manager;
     private int tick;
     private String state, changes, extra, raw, senderUsername;
 
     /**
      * Incommign message
-     * @param sender sender
+     * @param senderHostAddress sender
      * @param message message
      * @param manager link
      */
-    public CardsMessage(String sender, String message, int manager) {
-        otherEnd = sender;
+    public CardsMessage(String senderHostAddress, String message, int manager) {
+        otherEndUsername = parseUserName(message);
+        otherEndHost = senderHostAddress;
 
         tick = parseTick(message);
         state = parseState(message);
@@ -36,14 +38,14 @@ public class CardsMessage {
 
         raw = message;
 
-        if (tick == -1 || state == null || changes == null || extra == null) {
+        if (tick < -1 || state == null || changes == null || extra == null) {
             System.out.println("MALFORMED PACKAGE :(");
-            System.out.println(" from: " + sender);
-            System.out.println(" message: " + message);
-            System.out.println(" link: " + manager);
+            //System.out.println(" from: " + sender);
+            //System.out.println(" message: " + message);
+            //System.out.println(" link: " + manager);
 
             tick = -1;
-            state = changes = extra = null;
+            state = changes = extra = "";
         }
 
         this.manager = manager;
@@ -51,26 +53,22 @@ public class CardsMessage {
 
     /**
      * Outgoing message
-     * @param receiver
+     * @param receiverUsername
      * @param tick
-     * @param username
+     * @param myUsername
      * @param state
      * @param changes
      * @param extra
      */
-    public CardsMessage(String receiver, int tick, String username, String state, String changes, String extra) {
-        otherEnd = receiver;
+    public CardsMessage(String receiverUsername, int tick, String myUsername, String state, String changes, String extra) {
+        otherEndUsername = receiverUsername;
         this.tick = tick;
         this.state = state;
         this.changes = changes;
         this.extra = extra;
-        this.senderUsername = username;
+        this.senderUsername = myUsername;
 
         manager = TO_BE_DECIDED;
-    }
-
-    public String getOtherEnd() {
-        return otherEnd;
     }
 
     public String getMessage() {
@@ -99,7 +97,7 @@ public class CardsMessage {
 
     @Override
     public String toString() {
-        String ret = "message:\n" + "  sender: " + getOtherEnd() + "\n" + "  message: " + getMessage();
+        String ret = "message:\n" + "  sender: " + getOtherEndUsername() + "\n" + "  message: " + getMessage();
 
         return ret;
     }
@@ -166,19 +164,27 @@ public class CardsMessage {
         return extra;
     }
 
-    public String getUsername() {
-        return senderUsername;
+    public String getOtherEndUsername() {
+        return otherEndUsername;
     }
 
-    public String getRawMessage() {
-        return raw;
+    public String getOtherEndHost() {
+        return otherEndHost;
     }
 
     public int getManager() {
         return manager;
     }
 
-    public static String registerNewDeviceMessage(String owner) {
-        return new CardsMessage(owner, 0, "USERNAME","state", "changes", "extra").toString();
+    public static String registerNewDeviceMessageAsString(String receiverUsername) {
+        return new CardsMessage(receiverUsername, 0, MainActivity.getUsername() ,"state", "changes", "extra").toString();
+    }
+
+    public static CardsMessage registerNewDeviceMessage(String receiverUsername) {
+        return new CardsMessage(receiverUsername, 0, MainActivity.getUsername() ,"state", "changes", "extra");
+    }
+
+    public void prepareForSending() {
+        otherEndUsername = MainActivity.getUsername();
     }
 }

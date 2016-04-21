@@ -25,6 +25,7 @@ public class WiFiPPPService extends IntentService {
     public WiFiPPPService() {
         super("Cards WiFi server (zero argument constructor)");
         manager = WiFiPPPManager.getPppManager();
+        if (manager == null) System.err.println("MANAGER == NULL");
     }
 
     public WiFiPPPService(WiFiPPPManager manager) {
@@ -33,8 +34,6 @@ public class WiFiPPPService extends IntentService {
     }
 
     public void incommingMessage(CardsMessage message) {
-        System.out.println("incomming message: " + message);
-        System.out.println("manager: " + manager);
         manager.incommingMessage(message);
     }
 
@@ -63,15 +62,18 @@ public class WiFiPPPService extends IntentService {
                 }
 
                 //power level > 9000
-                String sender = client.getInetAddress().getHostAddress();
-                CardsMessage incomming = new CardsMessage(sender, message.toString(), CardsMessage.MANAGER_WIFIP2P);
+                String senderHostAddress = client.getInetAddress().getHostAddress();
+                CardsMessage incomming = new CardsMessage(senderHostAddress, message.toString(), CardsMessage.MANAGER_WIFIP2P);
 
                 incommingMessage(incomming);
+
+                client.close();
             }
 
             System.out.println("Closing server socket");
             serverSocket.close();
         } catch (IOException e) {
+            System.out.println("SERVER SERVICE FAILED");
             e.printStackTrace();
         }
     }

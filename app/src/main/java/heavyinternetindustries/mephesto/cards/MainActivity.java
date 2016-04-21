@@ -9,10 +9,12 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Random;
 
 import heavyinternetindustries.mephesto.cards.wifip2p.WiFiPPPManager;
 import heavyinternetindustries.mephesto.cards.wifip2p.WiFiPPPService;
@@ -25,6 +27,7 @@ public class MainActivity extends ActionBarActivity {
     WiFiPPPService service;
     HostListAdapter hostListAdapter;
     Hashtable<String, Integer> userManagers;
+    static String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,8 @@ public class MainActivity extends ActionBarActivity {
         wifiManager = new WiFiPPPManager(this);
         service = new WiFiPPPService(wifiManager);
         wifiDevices = new ArrayList<>();
+        username = (new Random()).nextInt() + "name";
+        ((TextView)findViewById(R.id.username)).setText(username);
 
         userManagers = new Hashtable<>();
 
@@ -80,9 +85,10 @@ public class MainActivity extends ActionBarActivity {
         System.out.println("MainActivity.onClickOk");
         String text = ((EditText) findViewById(R.id.bt_name_input)).getText().toString();
 
-        for (String user : userManagers.keySet()) {
-            System.out.println("Sending to: " + user);
-            sendMessage(new CardsMessage(user, 100, "USERNAME", "statetates", "changes", text));
+        System.out.println("userManagers.size() = " + userManagers.size());
+        for (String receiver : userManagers.keySet()) {
+            System.out.println("Sending to: " + receiver);
+            sendMessage(new CardsMessage(receiver, 100, MainActivity.getUsername(), "statetates", "changes", text));
         }
     }
 
@@ -110,22 +116,31 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void incomingMessage(CardsMessage cardsMessage) {
-        System.out.println("incoming message:");
-        System.out.println(cardsMessage);
+        String senderUsername = cardsMessage.getOtherEndUsername();
+        System.out.println("MainActivity.incomingMessage from: " + senderUsername);
 
-        if (!userManagers.containsKey(cardsMessage.getUsername())) {
-            userManagers.put(cardsMessage.getUsername(), cardsMessage.getManager());
+        if (senderUsername != null && !userManagers.containsKey(senderUsername)) {
+            userManagers.put(senderUsername, cardsMessage.getManager());
+
+            System.out.println("New username, sending register message");
+            sendMessage(CardsMessage.registerNewDeviceMessage(senderUsername));
         }
 
-        messages.add(cardsMessage);
+        if (cardsMessage.getTick() != -1) {
+            messages.add(cardsMessage);
+            System.out.println("Message: " + cardsMessage.getTick());
+        }
     }
 
     public void sendMessage(CardsMessage cardsMessage) {
-        String uName = cardsMessage.getUsername();
+        String uName = cardsMessage.getOtherEndUsername();
 
         if (userManagers.containsKey(uName)) {
             int link = userManagers.get(uName);
             if (link == CardsMessage.MANAGER_WIFIP2P) wifiManager.sendMessage(cardsMessage);
+        } else {
+            System.out.println("Name not found - names in list:");
+            for (String name : userManagers.keySet()) System.out.println(" : " + name);
         }
     }
 
@@ -143,5 +158,13 @@ public class MainActivity extends ActionBarActivity {
     public void invalidateHostList() {
         //findViewById(R.id.host_list).invalidate();
         hostList.setAdapter(hostListAdapter);
+    }
+
+    public void invalidateHostList(View view) {
+        hostList.invalidate();
+    }
+
+    public static String getUsername() {
+        return username;
     }
 }

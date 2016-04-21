@@ -36,6 +36,12 @@
             android:layout_height="wrap_content" />
 
         <Button
+            android:text="Invalidate list"
+            android:onClick="invalidateHostList"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
             android:text="Create new game"
             android:onClick="createNewGame"
             android:layout_width="fill_parent"
@@ -50,6 +56,12 @@
             android:clickable="true"
             android:onClick="clickedDiscoveringSwitch"
             android:enabled="true" />
+
+        <TextView
+            android:id="@+id/username"
+            android:text="dummy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <ListView
             android:layout_width="match_parent"

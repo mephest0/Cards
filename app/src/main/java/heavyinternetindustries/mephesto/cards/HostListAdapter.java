@@ -33,8 +33,10 @@ public class HostListAdapter extends ArrayAdapter<WifiP2pDevice> {
         View ret = li.inflate(R.layout.host_list_item, null);
 
         TextView tv = (TextView) ret.findViewById(R.id.title);
+        TextView ipView = (TextView) ret.findViewById(R.id.address);
 
         tv.setText("Name: " + device.deviceName);
+        ipView.setText("IP: " + device.deviceAddress + " Owner: " + device.isGroupOwner());
 
         return ret;
     }
