@@ -24,7 +24,7 @@ public class WiFiPPPService extends IntentService {
 
     public WiFiPPPService() {
         super("Cards WiFi server (zero argument constructor)");
-        manager = null;
+        manager = WiFiPPPManager.getPppManager();
     }
 
     public WiFiPPPService(WiFiPPPManager manager) {
@@ -33,7 +33,8 @@ public class WiFiPPPService extends IntentService {
     }
 
     public void incommingMessage(CardsMessage message) {
-        System.out.println("incomming message");
+        System.out.println("incomming message: " + message);
+        System.out.println("manager: " + manager);
         manager.incommingMessage(message);
     }
 

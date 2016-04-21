@@ -6,14 +6,14 @@ package heavyinternetindustries.mephesto.cards;
 public class CardsMessage {
     public static final int TO_BE_DECIDED = 0;
     public static final int MANAGER_WIFIP2P = 9001;
-    public static final String ARG_TICK = "TICK";
-    public static final String ARG_STATE = "STATE";
-    public static final String ARG_CHANGE = "CHANGE";
-    public static final String ARG_EXTRA = "EXTRA";
-    public static final String ARG_USERNAME = "USERNAME";
-    public static final String ARG_CONTENT_START = "[";
-    public static final String ARG_CONTENT_END = "]";
-    public static final String ARG_SEPARATOR = ";";
+    public static final String ARG_TICK = "T_ICK";
+    public static final String ARG_STATE = "STA_TE";
+    public static final String ARG_CHANGE = "CH_ANGE";
+    public static final String ARG_EXTRA = "EXT_RA";
+    public static final String ARG_USERNAME = "U_SER_NAM_E";
+    public static final String ARG_CONTENT_START = "::[";
+    public static final String ARG_CONTENT_END = "]::";
+    public static final String ARG_SEPARATOR = ";;;;";
     private String otherEnd;
     private final int manager;
     private int tick;
@@ -53,16 +53,18 @@ public class CardsMessage {
      * Outgoing message
      * @param receiver
      * @param tick
+     * @param username
      * @param state
      * @param changes
      * @param extra
      */
-    public CardsMessage(String receiver, int tick, String state, String changes, String extra) {
+    public CardsMessage(String receiver, int tick, String username, String state, String changes, String extra) {
         otherEnd = receiver;
         this.tick = tick;
         this.state = state;
         this.changes = changes;
         this.extra = extra;
+        this.senderUsername = username;
 
         manager = TO_BE_DECIDED;
     }
@@ -174,5 +176,9 @@ public class CardsMessage {
 
     public int getManager() {
         return manager;
+    }
+
+    public static String registerNewDeviceMessage(String owner) {
+        return new CardsMessage(owner, 0, "USERNAME","state", "changes", "extra").toString();
     }
 }

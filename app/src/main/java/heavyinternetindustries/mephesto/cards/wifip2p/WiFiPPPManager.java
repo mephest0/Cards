@@ -5,6 +5,7 @@ import android.content.IntentFilter;
 import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.AsyncTask;
 
@@ -20,6 +21,7 @@ import heavyinternetindustries.mephesto.cards.MainActivity;
  */
 public class WiFiPPPManager {
     public static final int SERVER_PORT = 9002;
+    private static WiFiPPPManager pppManager;
 
     MainActivity activity;
     WifiBroadcastReceiver broadcastReceiver = null;
@@ -32,6 +34,7 @@ public class WiFiPPPManager {
 
     public WiFiPPPManager(MainActivity activity) {
         this.activity = activity;
+        pppManager = this;
         p2pManager = (WifiP2pManager) activity.getSystemService(Context.WIFI_P2P_SERVICE);
         channel = p2pManager.initialize(activity, activity.getMainLooper(), null);
         pppDevices = new ArrayList<>();
@@ -168,12 +171,12 @@ public class WiFiPPPManager {
         if (host != null) {
             sendMessage(host, message.getRawMessage());
         } else {
-            //username not registered
+            System.out.println("Username not registered");
         }
     }
 
     private void sendMessage(String host, String message) {
-        DummyMessageClientTask task = new DummyMessageClientTask(message, host);
+        DummyMessageClientTask task = new DummyMessageClientTask(message, host.replace("/", "").trim());
 
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
@@ -185,6 +188,18 @@ public class WiFiPPPManager {
             userAdresses.put(message.getUsername(), message.getOtherEnd());
         }
 
-        activity.incommingMessage(message);
+        activity.incomingMessage(message);
+    }
+
+    public void setInfo(WifiP2pInfo info) {
+        System.out.println("WiFiPPPManager.setInfo");
+        System.out.println("info.groupOwnerAddress.toString() = " + info.groupOwnerAddress.toString());
+        sendMessage(info.groupOwnerAddress.toString(),
+                CardsMessage.registerNewDeviceMessage(info.groupOwnerAddress.toString()));
+
+    }
+
+    public static WiFiPPPManager getPppManager() {
+        return pppManager;
     }
 }

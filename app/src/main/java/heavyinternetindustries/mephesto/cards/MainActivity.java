@@ -77,17 +77,13 @@ public class MainActivity extends ActionBarActivity {
      * @param view View
      */
     public void onClickOk(View view) {
+        System.out.println("MainActivity.onClickOk");
         String text = ((EditText) findViewById(R.id.bt_name_input)).getText().toString();
-        String toastText;
 
-        if (text.length() == 0) {
-            toastText = "No text entered";
-        } else {
-            toastText = "Toasting: " + text;
+        for (String user : userManagers.keySet()) {
+            System.out.println("Sending to: " + user);
+            sendMessage(new CardsMessage(user, 100, "USERNAME", "statetates", "changes", text));
         }
-
-        Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_LONG);
-        toast.show();
     }
 
     public void toast(String message) {
@@ -113,8 +109,8 @@ public class MainActivity extends ActionBarActivity {
         toggle.setEnabled(true);
     }
 
-    public void incommingMessage(CardsMessage cardsMessage) {
-        System.out.println("incomming message:");
+    public void incomingMessage(CardsMessage cardsMessage) {
+        System.out.println("incoming message:");
         System.out.println(cardsMessage);
 
         if (!userManagers.containsKey(cardsMessage.getUsername())) {

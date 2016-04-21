@@ -72,6 +72,8 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
                 System.out.println("isConnected");
 
                 manager.requestConnectionInfo(channel, new WifiConnecntionInfoListener(pppManager));
+
+                manager.requestGroupInfo(channel, null);
             }
 
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
