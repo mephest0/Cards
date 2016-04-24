@@ -167,4 +167,14 @@ public class MainActivity extends ActionBarActivity {
     public static String getUsername() {
         return username;
     }
+
+    public void onClickStartGame(View view) {
+        System.out.println("MainActivity.onClickStartGame");
+
+        GameSetup setup = new GameSetup("testgame", userManagers.keySet(), getUsername());
+
+        GameManager manager = new GameManager(setup, this, new PokerRules());
+
+
+    }
 }
