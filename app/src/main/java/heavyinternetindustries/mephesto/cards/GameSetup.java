@@ -7,7 +7,15 @@ import java.util.Set;
  * Created by mephest0 on 24.04.16.
  */
 public class GameSetup {
-    public GameSetup(String nameOfTheGame, Set<String> players, String host) {
+    public GameSetup(String nameOfTheGame, Set<String> players, String host, String you) {
 
+    }
+
+    public ArrayList<String> getPlayers() {
+        return null;
+    }
+
+    public String getYou() {
+        return "";
     }
 }

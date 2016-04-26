@@ -15,4 +15,9 @@ public class GameManager {
         this.activity = activity;
         this.rules = rules;
     }
+
+    public void startGame() {
+        System.out.println("GameManager.startGame");
+        rules.update("");
+    }
 }

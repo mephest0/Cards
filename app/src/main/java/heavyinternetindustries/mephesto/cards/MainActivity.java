@@ -173,8 +173,8 @@ public class MainActivity extends ActionBarActivity {
 
         GameSetup setup = new GameSetup("testgame", userManagers.keySet(), getUsername());
 
-        GameManager manager = new GameManager(setup, this, new PokerRules());
+        GameManager manager = new GameManager(setup, this, new PokerRules(setup));
 
-
+        manager.startGame();
     }
 }

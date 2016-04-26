@@ -32,8 +32,6 @@ public class Card implements Comparable {
 
     private int value;
 
-    public static final Card ACE_OF_SPADES = new Card(SPADES, _ACE);
-
     public Card(int suit, int value) {
         this(suit * 13 + value);
     }
@@ -107,14 +105,17 @@ public class Card implements Comparable {
     }
 
     public static boolean isStraightAceLow() {
+        //TODO
         return false;
     }
 
     public static boolean isStraightAceHigh() {
+        //TODO
         return false;
     }
 
     public static boolean isStraightAceLowAndHigh() {
+        //TODO
         return false;
     }
 

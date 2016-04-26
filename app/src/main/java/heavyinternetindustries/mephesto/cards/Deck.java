@@ -1,6 +1,7 @@
 package heavyinternetindustries.mephesto.cards;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by mephest0 on 26.02.16.
@@ -47,5 +48,19 @@ public class Deck {
 
     public void addCard(ArrayList<Card> more) {
         cards.addAll(more);
+    }
+
+    public void shuffle() {
+        Collections.shuffle(cards);
+    }
+
+    /**
+     * Moves a single card to <code>deck</code>
+     * @param deck Deck to move card to
+     */
+    public void moveCard(Deck deck) {
+        Card card = cards.get(cards.size() - 1);
+        cards.remove(cards.size() - 1);
+        deck.addCard(card);
     }
 }
