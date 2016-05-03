@@ -39,12 +39,17 @@ public class PokerRules implements IRules {
     }
 
     @Override
-    public int update(String incoming) {
-        if (tick == 0 && incoming.equals("")) {
+    public int update(CardsMessage incoming) {
+        if (tick == 0 && incoming == null) {
             setUpGame();
-
         } else {
             //do logic
+            String[] deckStrings = incoming.getState().split(CardsMessage.MESSAGE_DECK_SEPARARATOR);
+
+            for (String string : deckStrings) {
+                String deckName = string.substring(0,
+                        string.indexOf("["));
+            }
         }
 
         return tick;
@@ -56,19 +61,20 @@ public class PokerRules implements IRules {
 
         ArrayList<Deck> playerDecks = new ArrayList<>();
         int i = 0;
-        for (String player : setup.getPlayers())
-            playerDecks.add(new Deck("player_" + i++, true));
+        if (setup.getPlayers() != null)
+            for (String player : setup.getPlayers())
+                playerDecks.add(new Deck("player_" + i++, true));
 
 
-        t1 = new Deck("T_2", true);
-        t2 = new Deck("T_3", true);
-        t3 = new Deck("T_4", true);
-        t4 = new Deck("T_5", true);
-        t5 = new Deck("T_6", true);
+        t1 = new Deck("flop_1", true);
+        t2 = new Deck("flop_2", true);
+        t3 = new Deck("flop_3", true);
+        t4 = new Deck("turn", true);
+        t5 = new Deck("river", true);
 
-        burn = new Deck("T_1", false);
+        burn = new Deck("burn", false);
 
-        unused = new Deck("T_7", false); //all other cards
+        unused = new Deck("unused", false); //all other cards
 
         //add whole deck to this deck and shuffle
         unused.addCard(Card.buildDeck());
@@ -89,5 +95,47 @@ public class PokerRules implements IRules {
             unused.moveCard(deck);
             unused.moveCard(deck);
         }
+    }
+
+    @Override
+    public CardsMessage getMessage() {
+        CardsMessage message = new CardsMessage("",
+                getTick(),
+                setup.getYou(),
+                getState(),
+                getChanges(),
+                getExtra());
+        return message;
+    }
+
+    private String getState() {
+        StringBuilder builder = new StringBuilder();
+
+        for (Deck deck : decks) {
+            //add name of deck
+            builder.append(deck.getPosition());
+            builder.append("[");
+
+            for (Card card : deck.getCards()) {
+                //add card
+                builder.append(card.getSuit() + CardsMessage.MESSAGE_VALUE_SUIT_SEPARATOR + card.getValue());
+                builder.append(CardsMessage.MESSAGE_CARD_SEPARATOR);
+            }
+
+            builder.append("]" + CardsMessage.MESSAGE_DECK_SEPARARATOR);
+        }
+
+        return builder.toString();
+    }
+
+    private String getChanges() {
+        return "";
+    }
+
+    private String getExtra() {
+        //player turn
+
+        //who started round
+        return "";
     }
 }

@@ -1,5 +1,8 @@
 package heavyinternetindustries.mephesto.cards;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 /**
  * Created by mephest0 on 25.02.16.
  */
@@ -14,6 +17,10 @@ public class CardsMessage {
     public static final String ARG_CONTENT_START = "::[";
     public static final String ARG_CONTENT_END = "]::";
     public static final String ARG_SEPARATOR = ";;;;";
+
+    public static final String MESSAGE_DECK_SEPARARATOR = "..";
+    public static final String MESSAGE_VALUE_SUIT_SEPARATOR = "_!";
+    public static final String MESSAGE_CARD_SEPARATOR = ",,";
 
     private String otherEndUsername, otherEndHost;
     private final int manager;
@@ -186,5 +193,26 @@ public class CardsMessage {
 
     public void prepareForSending() {
         otherEndUsername = MainActivity.getUsername();
+    }
+
+    public ArrayList<CardsMessage> addressTo(ArrayList<String> players) {
+        ArrayList<CardsMessage> ret = new ArrayList<>();
+
+        for (String username : players) {
+            CardsMessage message = createCopy();
+            message.otherEndUsername = username;
+            ret.add(message);
+        }
+
+        return ret;
+    }
+
+    public CardsMessage createCopy() {
+        return new CardsMessage(otherEndUsername,
+                tick,
+                senderUsername,
+                state,
+                changes,
+                extra);
     }
 }

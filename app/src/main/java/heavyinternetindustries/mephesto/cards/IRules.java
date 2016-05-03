@@ -39,5 +39,10 @@ public interface IRules {
      * @param incoming
      * @return tick
      */
-    int update(String incoming);
+    int update(CardsMessage incoming);
+
+    /**
+     * @return A CardsMessage representation of the state of the game
+     */
+    CardsMessage getMessage();
 }

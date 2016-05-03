@@ -10,12 +10,10 @@ public class Deck {
     private ArrayList<Card> cards;
     private String position;
     private boolean faceUp;
-    private String description;
 
     public Deck(String position, boolean faceUp) {
         this.position = position;
         this.faceUp = faceUp;
-        description = "";
         cards = new ArrayList<>();
     }
 
@@ -23,12 +21,8 @@ public class Deck {
         this.faceUp = faceUp;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
+    public String getPosition() {
+        return position;
     }
 
     /**

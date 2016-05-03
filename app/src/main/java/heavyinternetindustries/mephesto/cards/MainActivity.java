@@ -171,7 +171,7 @@ public class MainActivity extends ActionBarActivity {
     public void onClickStartGame(View view) {
         System.out.println("MainActivity.onClickStartGame");
 
-        GameSetup setup = new GameSetup("testgame", userManagers.keySet(), getUsername());
+        GameSetup setup = new GameSetup("testgame", userManagers.keySet(), getUsername(), getUsername());
 
         GameManager manager = new GameManager(setup, this, new PokerRules(setup));
 
