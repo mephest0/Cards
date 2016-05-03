@@ -22,6 +22,9 @@ public class CardsMessage {
     public static final String MESSAGE_VALUE_SUIT_SEPARATOR = "_!";
     public static final String MESSAGE_CARD_SEPARATOR = ",,";
 
+    public static final String MESSAGE_DECK_DATA_START = "[[";
+    public static final String MESSAGE_DECK_DATA_STOP = "]]";
+
     private String otherEndUsername, otherEndHost;
     private final int manager;
     private int tick;
@@ -214,5 +217,28 @@ public class CardsMessage {
                 state,
                 changes,
                 extra);
+    }
+
+    public void appendExtra(String fieldName, String data) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(extra);
+
+        builder.append(fieldName);
+        builder.append(MESSAGE_DECK_DATA_START);
+        builder.append(data);
+        builder.append(MESSAGE_DECK_DATA_STOP);
+
+        builder.append(MESSAGE_DECK_SEPARARATOR);
+
+        extra = builder.toString();
+    }
+
+    public String getExtra(String fieldName) {
+        int fieldStart = extra.indexOf(fieldName);
+        fieldStart = extra.indexOf(MESSAGE_DECK_DATA_START, fieldStart) + MESSAGE_DECK_DATA_START.length();
+
+        int fieldStop = extra.indexOf(MESSAGE_DECK_DATA_STOP, fieldStart);
+
+        return extra.substring(fieldStart, fieldStop);
     }
 }

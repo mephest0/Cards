@@ -15,6 +15,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
 
 import heavyinternetindustries.mephesto.cards.wifip2p.WiFiPPPManager;
 import heavyinternetindustries.mephesto.cards.wifip2p.WiFiPPPService;
@@ -28,12 +30,14 @@ public class MainActivity extends ActionBarActivity {
     HostListAdapter hostListAdapter;
     Hashtable<String, Integer> userManagers;
     static String username;
+    GameManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         messages = new ArrayList<>();
+        manager = null;
         wifiManager = new WiFiPPPManager(this);
         service = new WiFiPPPService(wifiManager);
         wifiDevices = new ArrayList<>();
@@ -127,9 +131,39 @@ public class MainActivity extends ActionBarActivity {
         }
 
         if (cardsMessage.getTick() != -1) {
-            messages.add(cardsMessage);
-            System.out.println("Message: " + cardsMessage.getTick());
+            //messages.add(cardsMessage);
+            if (manager != null) {
+                //business as usual
+                manager.updateFromNetwork(cardsMessage);
+            } else if (cardsMessage.getTick() == 1) {
+                //first update from host
+                prepareGameManager(cardsMessage);
+
+                manager.updateFromNetwork(cardsMessage);
+            } else {
+                System.out.println("ping");
+            }
+
         }
+    }
+
+    private void prepareGameManager(CardsMessage cardsMessage) {
+        //first update from host
+        String usernamesString = cardsMessage.getExtra(GameManager.PLAYER_LIST_EXTRA_ID);
+        String[] usernamesArray = usernamesString.split(CardsMessage.MESSAGE_CARD_SEPARATOR);
+
+        ArrayList<String> usernames = new ArrayList<>();
+        for (String name : usernamesArray)
+            usernames.add(name);
+
+        GameSetup setup = new GameSetup("Name from network (TODO)",
+                usernames,
+                cardsMessage.getOtherEndUsername(),
+                getUsername());
+
+        manager = new GameManager(setup, this, new PokerRules(setup));
+
+
     }
 
     public void sendMessage(CardsMessage cardsMessage) {
@@ -171,10 +205,17 @@ public class MainActivity extends ActionBarActivity {
     public void onClickStartGame(View view) {
         System.out.println("MainActivity.onClickStartGame");
 
-        GameSetup setup = new GameSetup("testgame", userManagers.keySet(), getUsername(), getUsername());
+        ArrayList<String> users = new ArrayList<>();
 
-        GameManager manager = new GameManager(setup, this, new PokerRules(setup));
+        for (String name : userManagers.keySet())
+            users.add(name);
+
+        GameSetup setup = new GameSetup("testgame", users, getUsername(), getUsername());
+
+        manager = new GameManager(setup, this, new PokerRules(setup));
 
         manager.startGame();
+
+
     }
 }

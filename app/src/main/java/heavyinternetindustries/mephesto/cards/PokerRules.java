@@ -50,6 +50,8 @@ public class PokerRules implements IRules {
                 String deckName = string.substring(0,
                         string.indexOf("["));
             }
+
+            //TODO
         }
 
         return tick;
@@ -114,7 +116,7 @@ public class PokerRules implements IRules {
         for (Deck deck : decks) {
             //add name of deck
             builder.append(deck.getPosition());
-            builder.append("[");
+            builder.append(CardsMessage.MESSAGE_DECK_DATA_START);
 
             for (Card card : deck.getCards()) {
                 //add card
@@ -122,7 +124,7 @@ public class PokerRules implements IRules {
                 builder.append(CardsMessage.MESSAGE_CARD_SEPARATOR);
             }
 
-            builder.append("]" + CardsMessage.MESSAGE_DECK_SEPARARATOR);
+            builder.append(CardsMessage.MESSAGE_DECK_DATA_STOP + CardsMessage.MESSAGE_DECK_SEPARARATOR);
         }
 
         return builder.toString();

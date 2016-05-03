@@ -7,8 +7,12 @@ import java.util.Set;
  * Created by mephest0 on 24.04.16.
  */
 public class GameSetup {
-    public GameSetup(String nameOfTheGame, Set<String> players, String host, String you) {
+    String nameOfTheGame, host, you;
 
+    public GameSetup(String nameOfTheGame, ArrayList<String> players, String host, String you) {
+        this.nameOfTheGame = nameOfTheGame;
+        this.host = host;
+        this.you = you;
     }
 
     public ArrayList<String> getPlayers() {
@@ -16,6 +20,10 @@ public class GameSetup {
     }
 
     public String getYou() {
-        return "";
+        return you;
+    }
+
+    public boolean isGroupOwner() {
+        return host.equals(you);
     }
 }

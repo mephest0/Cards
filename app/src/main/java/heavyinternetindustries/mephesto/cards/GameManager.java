@@ -8,6 +8,7 @@ import java.util.ArrayList;
  * Created by mephest0 on 24.04.16.
  */
 public class GameManager {
+    public static final String PLAYER_LIST_EXTRA_ID = "PLAYER_LIST";
     MainActivity activity;
     IRules rules;
     GameSetup setup;
@@ -27,6 +28,15 @@ public class GameManager {
 
     public void updateNetwork() {
         CardsMessage updateMessage = rules.getMessage();
+
+        if (updateMessage.getTick() == 1) {
+            //add player list, in correct order
+            StringBuilder builder = new StringBuilder();
+            for (String username : setup.getPlayers())
+                builder.append(username).append(CardsMessage.MESSAGE_CARD_SEPARATOR);
+
+            updateMessage.appendExtra(PLAYER_LIST_EXTRA_ID, builder.toString());
+        }
 
         ArrayList<CardsMessage> outgoingMessages = updateMessage.addressTo(setup.getPlayers());
 
