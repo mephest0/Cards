@@ -198,7 +198,8 @@ public class WiFiPPPManager {
         if (senderUsername != null && !userAdresses.containsKey(senderUsername)) {
             userAdresses.put(senderUsername, message.getOtherEndHost());
 
-            System.out.println("added username: " + senderUsername + " userAdresses.size() = " + userAdresses.size());;
+            System.out.println("added username: " + senderUsername + " userAdresses.size() = " + userAdresses.size());
+            ;
         }
 
         activity.incomingMessage(message);
@@ -206,6 +207,7 @@ public class WiFiPPPManager {
 
     /**
      * Network info changed
+     *
      * @param info
      */
     public void setInfo(WifiP2pInfo info) {

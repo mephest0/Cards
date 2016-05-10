@@ -32,9 +32,10 @@ public class CardsMessage {
 
     /**
      * Incommign message
+     *
      * @param senderHostAddress sender
-     * @param message message
-     * @param manager link
+     * @param message           message
+     * @param manager           link
      */
     public CardsMessage(String senderHostAddress, String message, int manager) {
         otherEndUsername = parseUserName(message);
@@ -63,6 +64,7 @@ public class CardsMessage {
 
     /**
      * Outgoing message
+     *
      * @param receiverUsername
      * @param tick
      * @param myUsername
@@ -187,11 +189,11 @@ public class CardsMessage {
     }
 
     public static String registerNewDeviceMessageAsString(String receiverUsername) {
-        return new CardsMessage(receiverUsername, 0, MainActivity.getUsername() ,"state", "changes", "extra").toString();
+        return new CardsMessage(receiverUsername, 0, MainActivity.getUsername(), "state", "changes", "extra").toString();
     }
 
     public static CardsMessage registerNewDeviceMessage(String receiverUsername) {
-        return new CardsMessage(receiverUsername, 0, MainActivity.getUsername() ,"state", "changes", "extra");
+        return new CardsMessage(receiverUsername, 0, MainActivity.getUsername(), "state", "changes", "extra");
     }
 
     public void prepareForSending() {
