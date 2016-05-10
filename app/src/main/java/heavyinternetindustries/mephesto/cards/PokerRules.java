@@ -45,13 +45,14 @@ public class PokerRules implements IRules {
         } else {
             //do logic
             String[] deckStrings = incoming.getState().split(CardsMessage.MESSAGE_DECK_SEPARARATOR);
+            String deckName;
 
             for (String string : deckStrings) {
-                String deckName = string.substring(0,
-                        string.indexOf("["));
+                deckName = string.substring(0,
+                        string.indexOf(CardsMessage.MESSAGE_DECK_DATA_START));
             }
 
-            //TODO
+
         }
 
         return tick;
@@ -101,13 +102,12 @@ public class PokerRules implements IRules {
 
     @Override
     public CardsMessage getMessage() {
-        CardsMessage message = new CardsMessage("",
+        return new CardsMessage("",
                 getTick(),
                 setup.getYou(),
                 getState(),
                 getChanges(),
                 getExtra());
-        return message;
     }
 
     private String getState() {
