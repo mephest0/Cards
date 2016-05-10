@@ -43,32 +43,31 @@ public class PokerRules implements IRules {
         if (tick == 0 && incoming == null) {
             setUpGame();
         } else {
-            //do logic
             String[] deckStrings = incoming.getState().split(CardsMessage.MESSAGE_DECK_SEPARARATOR);
-
-
+            ArrayList<Deck> listOfDecks = new ArrayList<>();
 
             for (String string : deckStrings) {
-                String deckName= string.substring(0,
+                String deckName = string.substring(0,
                         string.indexOf(CardsMessage.MESSAGE_DECK_DATA_START));
 
                 String[] cardData = getCardDataFromDeckStrings(string);
-                Deck deck = new Deck(deckName,true); //// TODO: 10.05.16
-                for (String cardString : cardData){
+                Deck deck = new Deck(deckName, true); //// TODO: 10.05.16
+                for (String cardString : cardData) {
                     int separatorIndex = cardString.indexOf(CardsMessage.MESSAGE_VALUE_SUIT_SEPARATOR);
                     int valueStart = separatorIndex + CardsMessage.MESSAGE_VALUE_SUIT_SEPARATOR.length();
                     try {
                         int suit = Integer.parseInt(cardString.substring(0, separatorIndex));
                         int value = Integer.parseInt(cardString.substring(valueStart, cardString.length() - 1));
-                        deck.addCard(new Card(suit,value));
-                    }catch (NumberFormatException e){
+                        deck.addCard(new Card(suit, value));
+                    } catch (NumberFormatException e) {
                         System.out.println("Error in !" + cardString + "!");
                         System.out.println("valueStart = " + valueStart);
                         System.out.println("separatorIndex = " + separatorIndex);
                     }
                 }
-
+                listOfDecks.add(deck);
             }
+            decks = listOfDecks;
 
         }
 
