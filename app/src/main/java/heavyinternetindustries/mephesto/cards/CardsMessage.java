@@ -18,7 +18,7 @@ public class CardsMessage {
     public static final String ARG_CONTENT_END = "]::";
     public static final String ARG_SEPARATOR = ";;;;";
 
-    public static final String MESSAGE_DECK_SEPARARATOR = "..";
+    public static final String MESSAGE_DECK_SEPARARATOR = "-_-";
     public static final String MESSAGE_VALUE_SUIT_SEPARATOR = "_!";
     public static final String MESSAGE_CARD_SEPARATOR = ",,";
 

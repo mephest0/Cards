@@ -23,7 +23,8 @@ public class GameManager {
         System.out.println("GameManager.startGame");
         rules.update(null);
 
-        updateNetwork();
+        rules.update(rules.getMessage());
+        //updateNetwork();
     }
 
     public void updateNetwork() {

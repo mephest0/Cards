@@ -44,29 +44,38 @@ public class PokerRules implements IRules {
             setUpGame();
         } else {
             String[] deckStrings = incoming.getState().split(CardsMessage.MESSAGE_DECK_SEPARARATOR);
+
             ArrayList<Deck> listOfDecks = new ArrayList<>();
 
-            for (String string : deckStrings) {
-                String deckName = string.substring(0,
-                        string.indexOf(CardsMessage.MESSAGE_DECK_DATA_START));
+            for (String deckString : deckStrings) {
+                if (deckString.length() == 0) continue;
 
-                String[] cardData = getCardDataFromDeckStrings(string);
+                String deckName = deckString.substring(0,
+                        deckString.indexOf(CardsMessage.MESSAGE_DECK_DATA_START));
+
                 Deck deck = new Deck(deckName, true); //// TODO: 10.05.16
+                String[] cardData = getCardDataFromDeckStrings(deckString);
+
                 for (String cardString : cardData) {
+                    if (cardString.length() == 0) continue;
+
                     int separatorIndex = cardString.indexOf(CardsMessage.MESSAGE_VALUE_SUIT_SEPARATOR);
                     int valueStart = separatorIndex + CardsMessage.MESSAGE_VALUE_SUIT_SEPARATOR.length();
                     try {
                         int suit = Integer.parseInt(cardString.substring(0, separatorIndex));
-                        int value = Integer.parseInt(cardString.substring(valueStart, cardString.length() - 1));
+                        int value = Integer.parseInt(cardString.substring(valueStart));
+
                         deck.addCard(new Card(suit, value));
-                    } catch (NumberFormatException e) {
-                        System.out.println("Error in !" + cardString + "!");
-                        System.out.println("valueStart = " + valueStart);
-                        System.out.println("separatorIndex = " + separatorIndex);
+                    } catch (Exception e) {
+                        System.err.println("Error in !" + cardString + "!");
+                        System.err.println("valueStart = " + valueStart);
+                        System.err.println("separatorIndex = " + separatorIndex);
                     }
                 }
+
                 listOfDecks.add(deck);
             }
+
             decks = listOfDecks;
 
         }
