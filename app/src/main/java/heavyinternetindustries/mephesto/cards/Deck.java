@@ -7,18 +7,28 @@ import java.util.Collections;
  * Created by mephest0 on 26.02.16.
  */
 public class Deck {
+    public static final String PLAYER = "player_";
+    public static final String FLOP1 = "flop_1";
+    public static final String FLOP2 = "flop_2";
+    public static final String FLOP3 = "flop_3";
+    public static final String TURN = "turn";
+    public static final String RIVER = "river";
+    public static final String BURN = "burn";
+    public static final String UNUSED = "unused";
+
     private ArrayList<Card> cards;
     private String position;
     private boolean faceUp;
 
-    public Deck(String position, boolean faceUp) {
+
+    public Deck(String position){
         this.position = position;
-        this.faceUp = faceUp;
+        faceUp = !isFacedDown();
         cards = new ArrayList<>();
     }
 
-    public void setFaceUp(boolean faceUp) {
-        this.faceUp = faceUp;
+    private boolean isFacedDown() {
+        return position.equals(BURN) || position.equals(UNUSED);
     }
 
     public String getPosition() {

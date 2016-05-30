@@ -40,54 +40,62 @@ public class PokerRules implements IRules {
 
     @Override
     public int update(CardsMessage incoming) {
-        if (tick == 0 && incoming == null) {
+        if (gameHasNotStarted(incoming)) {
             setUpGame();
         } else {
-            String[] deckStrings = incoming.getState().split(CardsMessage.MESSAGE_DECK_SEPARARATOR);
-
-            ArrayList<Deck> listOfDecks = new ArrayList<>();
-
-            for (String deckString : deckStrings) {
-                if (deckString.length() == 0) continue;
-
-                String deckName = deckString.substring(0,
-                        deckString.indexOf(CardsMessage.MESSAGE_DECK_DATA_START));
-
-                Deck deck = new Deck(deckName, true); //// TODO: 10.05.16
-                String[] cardData = getCardDataFromDeckStrings(deckString);
-
-                for (String cardString : cardData) {
-                    if (cardString.length() == 0) continue;
-
-                    int separatorIndex = cardString.indexOf(CardsMessage.MESSAGE_VALUE_SUIT_SEPARATOR);
-                    int valueStart = separatorIndex + CardsMessage.MESSAGE_VALUE_SUIT_SEPARATOR.length();
-                    try {
-                        int suit = Integer.parseInt(cardString.substring(0, separatorIndex));
-                        int value = Integer.parseInt(cardString.substring(valueStart));
-
-                        deck.addCard(new Card(suit, value));
-                    } catch (Exception e) {
-                        System.err.println("Error in !" + cardString + "!");
-                        System.err.println("valueStart = " + valueStart);
-                        System.err.println("separatorIndex = " + separatorIndex);
-                    }
-                }
-
-                listOfDecks.add(deck);
-            }
-
-            decks = listOfDecks;
+            decks = parseDecks(incoming);
 
         }
-
         return tick;
     }
 
+    private ArrayList<Deck> parseDecks(CardsMessage incoming) {
+        String[] deckStrings = incoming.getState().split(CardsMessage.MESSAGE_DECK_SEPARARATOR);
+
+        ArrayList<Deck> listOfDecks = new ArrayList<>();
+
+        for (String deckString : deckStrings) {
+            if (deckString.length() == 0) continue;
+            listOfDecks.add(makeDeck(deckString));
+        }
+        return listOfDecks;
+    }
+
+    private Deck makeDeck(String deckString) {
+        String deckName = deckString.substring(0,
+                deckString.indexOf(CardsMessage.MESSAGE_DECK_DATA_START));
+
+        Deck deck = new Deck(deckName);
+        String[] cardData = getCardDataFromDeckStrings(deckString);
+
+        for (String cardString : cardData) {
+            if (cardString.length() == 0) continue;
+            deck.addCard(makeCard(cardString));
+        }
+
+        return deck;
+    }
+
+    private Card makeCard(String cardString) {
+        int separatorIndex = cardString.indexOf(CardsMessage.MESSAGE_VALUE_SUIT_SEPARATOR);
+        int valueStart = separatorIndex + CardsMessage.MESSAGE_VALUE_SUIT_SEPARATOR.length();
+
+        int suit = Integer.parseInt(cardString.substring(0, separatorIndex));
+        int value = Integer.parseInt(cardString.substring(valueStart));
+
+        return new Card(suit, value);
+    }
+
+    private boolean gameHasNotStarted(CardsMessage incoming) {
+        return tick == 0 && incoming == null;
+    }
+
     private String[] getCardDataFromDeckStrings(String string) {
-        int start= string.indexOf(CardsMessage.MESSAGE_DECK_DATA_START) + CardsMessage.MESSAGE_DECK_DATA_START.length();
+        int start = string.indexOf(CardsMessage.MESSAGE_DECK_DATA_START) + CardsMessage.MESSAGE_DECK_DATA_START.length();
         int end = string.indexOf(CardsMessage.MESSAGE_DECK_DATA_STOP);
         return string.substring(start, end).split(CardsMessage.MESSAGE_CARD_SEPARATOR);
     }
+
 
     private void setUpGame() {
         //deal cards
@@ -97,18 +105,18 @@ public class PokerRules implements IRules {
         int i = 0;
         if (setup.getPlayers() != null)
             for (String player : setup.getPlayers())
-                playerDecks.add(new Deck("player_" + i++, true));
+                playerDecks.add(new Deck(Deck.PLAYER + i++));
 
 
-        t1 = new Deck("flop_1", true);
-        t2 = new Deck("flop_2", true);
-        t3 = new Deck("flop_3", true);
-        t4 = new Deck("turn", true);
-        t5 = new Deck("river", true);
+        t1 = new Deck(Deck.FLOP1);
+        t2 = new Deck(Deck.FLOP2);
+        t3 = new Deck(Deck.FLOP3);
+        t4 = new Deck(Deck.TURN);
+        t5 = new Deck(Deck.RIVER);
 
-        burn = new Deck("burn", false);
+        burn = new Deck(Deck.BURN);
 
-        unused = new Deck("unused", false); //all other cards
+        unused = new Deck(Deck.UNUSED); //all other cards
 
         //add whole deck to this deck and shuffle
         unused.addCard(Card.buildDeck());
@@ -171,4 +179,6 @@ public class PokerRules implements IRules {
         //who started round
         return "";
     }
+
+
 }
