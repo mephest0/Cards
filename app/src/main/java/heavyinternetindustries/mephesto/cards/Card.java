@@ -1,6 +1,9 @@
 package heavyinternetindustries.mephesto.cards;
 
+import android.widget.ArrayAdapter;
+
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by mephest0 on 26.02.16.
@@ -11,6 +14,7 @@ public class Card implements Comparable {
     public static int HEARTS = 2;
     public static int SPADES = 3;
 
+    private static int _A_HIGH = 13;
     public static int _A = 0;
     public static int _2 = 1;
     public static int _3 = 2;
@@ -48,6 +52,10 @@ public class Card implements Comparable {
         return value / 13;
     }
 
+    private void setAceHigh() {
+        if (value == _A) value = _A_HIGH;
+    }
+
     public boolean isPair(Card other) {
         return isPair(this, other);
     }
@@ -65,6 +73,7 @@ public class Card implements Comparable {
     }
 
     public static int indexOfHighCard(int number, Card ... params) {
+        //TODO ace is low, maybe create another method for ace high?
         if (number > 0) {
             int maxIndex = 0;
 
@@ -101,20 +110,31 @@ public class Card implements Comparable {
                 return false;
 
         return true;
-
     }
 
-    public static boolean isStraightAceLow() {
+    /**
+     * Checks if cards are sequential, with no doubles. Ace counts as 1
+     * @param params
+     * @return
+     */
+    public static boolean isStraightAceLow(Card ... params) {
+        ArrayList<Card> list = new ArrayList<>();
+        for (Card card : params) list.add(card);
+
+        Collections.sort(list);
+        for (int i = 0; i < list.size() - 2; i++) {
+            //TODO check if diff should be 1 or -1
+            if (list.get(i).getValue() - list.get(i + 1).getValue() != 1) return false;
+        }
+        return true;
+    }
+
+    public static boolean isStraightAceHigh(Card ... params) {
         //TODO
         return false;
     }
 
-    public static boolean isStraightAceHigh() {
-        //TODO
-        return false;
-    }
-
-    public static boolean isStraightAceLowAndHigh() {
+    public static boolean isStraightAceLowAndHigh(Card ... params) {
         //TODO
         return false;
     }
@@ -126,6 +146,10 @@ public class Card implements Comparable {
             ret.add(new Card(i));
 
         return ret;
+    }
+
+    public int getResource() {
+        return getResource(this);
     }
 
     @Override
@@ -141,5 +165,69 @@ public class Card implements Comparable {
         }
 
         return 0;
+    }
+
+    public static int getResource(Card card) {
+        if (card.getSuit() == SPADES) {
+            if (card.getValue() == _10) return R.drawable.s10;
+            if (card.getValue() == _2) return R.drawable.s2;
+            if (card.getValue() == _3) return R.drawable.s3;
+            if (card.getValue() == _4) return R.drawable.s4;
+            if (card.getValue() == _5) return R.drawable.s5;
+            if (card.getValue() == _6) return R.drawable.s6;
+            if (card.getValue() == _7) return R.drawable.s7;
+            if (card.getValue() == _8) return R.drawable.s8;
+            if (card.getValue() == _9) return R.drawable.s9;
+            if (card.getValue() == _J) return R.drawable.sj;
+            if (card.getValue() == _Q) return R.drawable.sq;
+            if (card.getValue() == _K) return R.drawable.sk;
+            if (card.getValue() == _A) return R.drawable.sa;
+        } else if (card.getSuit() == CLUBS) {
+            if (card.getValue() == _10) return R.drawable.q10;
+            if (card.getValue() == _2) return R.drawable.q2;
+            if (card.getValue() == _3) return R.drawable.q3;
+            if (card.getValue() == _4) return R.drawable.q4;
+            if (card.getValue() == _5) return R.drawable.q5;
+            if (card.getValue() == _6) return R.drawable.q6;
+            if (card.getValue() == _7) return R.drawable.q7;
+            if (card.getValue() == _8) return R.drawable.q8;
+            if (card.getValue() == _9) return R.drawable.q9;
+            if (card.getValue() == _J) return R.drawable.qj;
+            if (card.getValue() == _Q) return R.drawable.qq;
+            if (card.getValue() == _K) return R.drawable.qk;
+            if (card.getValue() == _A) return R.drawable.qa;
+        } else if (card.getSuit() == HEARTS) {
+            if (card.getValue() == _10) return R.drawable.h10;
+            if (card.getValue() == _2) return R.drawable.h2;
+            if (card.getValue() == _3) return R.drawable.h3;
+            if (card.getValue() == _4) return R.drawable.h4;
+            if (card.getValue() == _5) return R.drawable.h5;
+            if (card.getValue() == _6) return R.drawable.h6;
+            if (card.getValue() == _7) return R.drawable.h7;
+            if (card.getValue() == _8) return R.drawable.h8;
+            if (card.getValue() == _9) return R.drawable.h9;
+            if (card.getValue() == _J) return R.drawable.hj;
+            if (card.getValue() == _Q) return R.drawable.hq;
+            if (card.getValue() == _K) return R.drawable.hk;
+            if (card.getValue() == _A) return R.drawable.ha;
+        } else if (card.getSuit() == DIAMONDS) {
+            if (card.getValue() == _10) return R.drawable.d10;
+            if (card.getValue() == _2) return R.drawable.d2;
+            if (card.getValue() == _3) return R.drawable.d3;
+            if (card.getValue() == _4) return R.drawable.d4;
+            if (card.getValue() == _5) return R.drawable.d5;
+            if (card.getValue() == _6) return R.drawable.d6;
+            if (card.getValue() == _7) return R.drawable.d7;
+            if (card.getValue() == _8) return R.drawable.d8;
+            if (card.getValue() == _9) return R.drawable.d9;
+            if (card.getValue() == _J) return R.drawable.dj;
+            if (card.getValue() == _Q) return R.drawable.dq;
+            if (card.getValue() == _K) return R.drawable.dk;
+            if (card.getValue() == _A) return R.drawable.da;
+        }
+
+        System.out.println("UH OH! Could not resolve image resource for card:");
+        System.out.println(card);
+        return -1337;
     }
 }

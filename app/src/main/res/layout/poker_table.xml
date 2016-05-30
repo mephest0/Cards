@@ -12,26 +12,36 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:src="@drawable/sq"
+            android:adjustViewBounds="true"
             android:layout_weight="1" />
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:src="@drawable/hq"
+            android:adjustViewBounds="true"
             android:layout_weight="1" />
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:src="@drawable/s10"
+            android:adjustViewBounds="true"
             android:layout_weight="1" />
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:src="@drawable/sj"
+            android:adjustViewBounds="true"
             android:layout_weight="1" />
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:src="@drawable/h7"
+            android:adjustViewBounds="true"
             android:layout_weight="1" />
     </LinearLayout>
 
@@ -47,7 +57,7 @@
             android:layout_height="wrap_content" />
 
         <TextView
-            android:text="and som space"
+            android:text="and some space"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -98,54 +108,22 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:background="#ffffff"
-                android:layout_width="match_parent"
-                android:minWidth="200dp"
-                android:minHeight="200dp"
+            <ImageView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp">
+                android:maxWidth="130dp"
+                android:src="@drawable/sk"
+                android:adjustViewBounds="true"
+                android:layout_gravity="center" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minHeight="50dp"
-                    android:minWidth="50dp"
-                    android:layout_gravity="center" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="130dp"
+                android:src="@drawable/sa"
+                android:adjustViewBounds="true"
+                android:layout_gravity="center" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="100dp"
-                    android:text="7"
-                    android:textColor="#000"
-                    android:layout_gravity="center"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:background="#ffffff"
-                android:layout_width="match_parent"
-                android:minWidth="200dp"
-                android:minHeight="200dp"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minHeight="50dp"
-                    android:minWidth="50dp"
-                    android:layout_gravity="center" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="100dp"
-                    android:text="K"
-                    android:textColor="#000"
-                    android:layout_gravity="center"/>
-            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>
