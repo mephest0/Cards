@@ -29,10 +29,10 @@ public class Card implements Comparable {
     public static int _Q = 11;
     public static int _K = 12;
 
-    public static int _ACE = 0;
-    public static int _JACK = 10;
-    public static int _QUEEN = 11;
-    public static int _KING = 12;
+    public static int _ACE = _A;
+    public static int _JACK = _J;
+    public static int _QUEEN = _Q;
+    public static int _KING = _K;
 
     private int value;
 
@@ -56,6 +56,14 @@ public class Card implements Comparable {
         if (value == _A) value = _A_HIGH;
     }
 
+    private void setAceLow() {
+        if (value == _A_HIGH) value = _A;
+    }
+
+    private Card copy() {
+        return new Card(getSuit(), getValue());
+    }
+
     public boolean isPair(Card other) {
         return isPair(this, other);
     }
@@ -72,12 +80,12 @@ public class Card implements Comparable {
         }
     }
 
-    public static int indexOfHighCard(int number, Card ... params) {
+    public static int indexOfHighCardAceLow(Card ... params) {
         //TODO ace is low, maybe create another method for ace high?
-        if (number > 0) {
+        if (params.length > 0) {
             int maxIndex = 0;
 
-            for (int i = 0; i < number; i++) {
+            for (int i = 0; i < params.length; i++) {
                 if (!params[maxIndex].isHighCard(params[i])) maxIndex = i;
             }
 
@@ -87,12 +95,22 @@ public class Card implements Comparable {
         return 0; //WTF
     }
 
+    public static int indexOfHighCardAceHigh(Card ... params) {
+        //TODO
+        return 0;
+    }
+
     public static boolean isPair(Card card1, Card card2) {
         return (card1.getValue() % 13 == card2.getValue() % 13);
     }
 
-    public static boolean isOfAKind(int number, Card ... params) {
-        for (int i = 0; i < number  - 1; i++) {
+    /**
+     *
+     * @param params Any number of cards to check
+     * @return <code>true</code> if <bold>all</bold> cards have the same <bold>value</bold>
+     */
+    public static boolean isOfAKind(Card ... params) {
+        for (int i = 0; i < params.length - 1; i++) {
             if (!isPair(params[i], params[i + 1]))
                 return false;
         }
@@ -113,25 +131,36 @@ public class Card implements Comparable {
     }
 
     /**
-     * Checks if cards are sequential, with no doubles. Ace counts as 1
-     * @param params
-     * @return
+     * Checks if cards are sequential, with no doubles. Ace counts as 1. This method takes any number of cards
+     * @param params Cards to check
+     * @return <code>true</code> if <bold>all</bold> cards are sequential
      */
     public static boolean isStraightAceLow(Card ... params) {
         ArrayList<Card> list = new ArrayList<>();
         for (Card card : params) list.add(card);
 
         Collections.sort(list);
+
         for (int i = 0; i < list.size() - 2; i++) {
-            //TODO check if diff should be 1 or -1
-            if (list.get(i).getValue() - list.get(i + 1).getValue() != 1) return false;
+            if (list.get(i).getValue() - list.get(i + 1).getValue() != -1) return false;
         }
+
         return true;
     }
 
     public static boolean isStraightAceHigh(Card ... params) {
-        //TODO
-        return false;
+        ArrayList<Card> list = new ArrayList<>();
+        for (Card card : params) list.add(card.copy()); //Copies card, to set ace high
+
+        for (Card card : list) card.setAceHigh();
+
+        Collections.sort(list);
+
+        for (int i = 0; i < list.size() - 2; i++) {
+            if (list.get(i).getValue() - list.get(i + 1).getValue() != -1) return false;
+        }
+
+        return true;
     }
 
     public static boolean isStraightAceLowAndHigh(Card ... params) {
