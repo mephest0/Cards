@@ -87,22 +87,53 @@ public class Card implements Comparable {
     }
 
     /**
-     *
+     * This method always returns the pair with the highest value. Ace high.
      * @param params
      * @return <code>null</code> if no pairs, otherwise one of the <code>Card</code>s in the pair
      */
     public static Card isPair(Card ... params) {
-        //TODO
-        return null;
+        Card ret = null;
+        for (Card card : params) card.setAceHigh(); //set ace high
+
+        for (Card i : params) {
+            for (Card j : params) {
+                if (isPair(i, j) && i != j) {
+                    if (i.compareTo(ret) > 0) ret = i;
+                }
+            }
+        }
+
+        return ret;
     }
 
     /**
-     *
+     * Ace is high
      * @param params
      * @return <code>null</code> if no pairs, otherwise one <code>Card</code> from each pair
      */
     public static Card[] isTwoPairs(Card ... params) {
-        //TODO
+        Card pair1 = null;
+        Card pair2 = null;
+
+        for (Card i : params) {
+            for (Card j : params) {
+                if (isPair(i, j) && i != j) {
+                    if (i.compareTo(pair1) > 0) pair1 = i;
+                }
+            }
+        }
+
+        for (Card i : params) {
+            for (Card j : params) {
+                if (isPair(i, j) && i != j) {
+                    if (i.compareTo(pair2) > 0 && i != pair1 && j != pair1) pair2 = i;
+                }
+            }
+        }
+
+        if (pair1 != null && pair2 != null)
+            return new Card[]{pair1, pair2};
+
         return null;
     }
 
@@ -111,8 +142,9 @@ public class Card implements Comparable {
      * @param params
      * @return <code>null</code> if no straight flush, otherwise the highest <code>Card</code> in straight
      */
-    public static Card[] isStrightFlush(Card ... params) {
-        //TODO
+    public static Card isStraightFlush(Card ... params) {
+        if (isFlush(params))
+            return isStraightAceHigh(params);
         return null;
     }
 
@@ -140,9 +172,20 @@ public class Card implements Comparable {
      * @param params
      * @return highest card in series
      */
-    public static int getHighCardAceHigh(Card ... params) {
-        //TODO
-        return 0;
+    public static Card getHighCardAceHigh(Card ... params) {
+        for (Card card : params) card.setAceHigh();
+
+        if (params.length > 0) {
+            int maxIndex = 0;
+
+            for (int i = 0; i < params.length; i++) {
+                if (!params[maxIndex].isHighCard(params[i])) maxIndex = i;
+            }
+
+            return params[maxIndex];
+        }
+
+        return null; //WTF
     }
 
     public static boolean isPair(Card card1, Card card2) {
@@ -168,7 +211,7 @@ public class Card implements Comparable {
      * @param params
      * @return <code>true</code> if all <code>Card</code>s are same suit
      */
-    public boolean isFlush(Card ... params) {
+    public static boolean isFlush(Card ... params) {
         if (params.length < 1) return false;
 
         int suit = params[0].getSuit();
@@ -219,20 +262,23 @@ public class Card implements Comparable {
     }
 
     /**
-     *
+     * Ace high and low
      * @param params
      * @return Highest card in straight, <code>null</code> if there is not a straight
      */
-    public static boolean isStraight(Card ... params) {
-        //TODO
-        return false;
+    public static Card isStraight(Card ... params) {
+        Card ret = isStraightAceHigh(params);
+        if (ret == null) ret = isStraightAceLow(params);
+
+        return ret;
     }
 
     public static ArrayList<Card> buildDeck() {
         ArrayList<Card> ret = new ArrayList<>();
 
-        for (int i = 0; i < 52; i++)
-            ret.add(new Card(i));
+        for (int suit : new int[]{CLUBS, DIAMONDS, HEARTS, SPADES})
+            for (int value : new int[]{_A, _K, _Q, _J, _10, _9, _8, _7, _6, _5, _4, _3, _2})
+                ret.add(new Card(suit, value));
 
         return ret;
     }
