@@ -292,6 +292,9 @@ public class Card implements Comparable {
                 return null;
         }
 
+
+        for (Card card : list) card.setAceLow();
+
         return list.get(list.size() - 1);
     }
 
