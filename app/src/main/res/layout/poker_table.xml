@@ -10,42 +10,27 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/sq"
-            android:adjustViewBounds="true"
-            android:layout_weight="1" />
+            style="@style/table_card"
+            android:id="@+id/table_card_1" />
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/hq"
-            android:adjustViewBounds="true"
-            android:layout_weight="1" />
+            style="@style/table_card"
+            android:id="@+id/table_card_2" />
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/s10"
-            android:adjustViewBounds="true"
-            android:layout_weight="1" />
+            style="@style/table_card"
+            android:id="@+id/table_card_3" />
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/sj"
-            android:adjustViewBounds="true"
-            android:layout_weight="1" />
+            style="@style/table_card"
+            android:id="@+id/table_card_4" />
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/h7"
-            android:adjustViewBounds="true"
-            android:layout_weight="1" />
+            style="@style/table_card"
+            android:id="@+id/table_card_5" />
     </LinearLayout>
 
-    <!-- players and hand -->
+    <!-- info and space -->
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -62,6 +47,7 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
+    <!-- players and hand -->
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -174,20 +160,12 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxWidth="130dp"
-                android:src="@drawable/sk"
-                android:adjustViewBounds="true"
-                android:layout_gravity="center" />
+                style="@style/hand_card"
+                android:id="@+id/hand_card_1" />
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxWidth="130dp"
-                android:src="@drawable/sa"
-                android:adjustViewBounds="true"
-                android:layout_gravity="center" />
+                style="@style/hand_card"
+                android:id="@+id/hand_card_2" />
 
         </LinearLayout>
 

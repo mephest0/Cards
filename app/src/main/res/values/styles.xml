@@ -1,8 +1,25 @@
-<resources>
+<resources xmlns:name="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+    </style>
+
+    <style name="table_card">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:src">@drawable/sa</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <style name="hand_card">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxWidth">130dp</item>
+        <item name="android:src">@drawable/sa</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:layout_gravity">center</item>
     </style>
 
 </resources>
