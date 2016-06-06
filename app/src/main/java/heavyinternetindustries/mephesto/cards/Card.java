@@ -129,6 +129,7 @@ public class Card implements Comparable {
         for (Card i : params) {
             for (Card j : params) {
                 if (isPair(i, j) && i != j) {
+                    if (ret == null) ret = i;
                     if (i.compareTo(ret) > 0) ret = i;
                 }
             }
