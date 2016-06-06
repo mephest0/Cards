@@ -37,6 +37,7 @@ public class GameManager {
 
         for (CardsMessage outgoingMessage : outgoingMessages)
             activity.sendMessage(outgoingMessage);
+        updateUI();
     }
 
     private void appendPlayerList(CardsMessage updateMessage) {
@@ -57,5 +58,10 @@ public class GameManager {
 
     private void updateUI() {
         System.out.println("UPDATE UI HERE!");
+
+        //if (!ui inflated)
+        //  inflate ui
+
+        //update ui
     }
 }
