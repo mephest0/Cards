@@ -64,10 +64,6 @@ public class Card implements Comparable {
         return new Card(getSuit(), getValue());
     }
 
-    public boolean isPair(Card other) {
-        return isPair(this, other);
-    }
-
     /**
      * @param other
      * @return This card is higher that <code>other</code>
@@ -80,8 +76,27 @@ public class Card implements Comparable {
         }
     }
 
-    public static int indexOfHighCardAceLow(Card ... params) {
-        //TODO ace is low, maybe create another method for ace high?
+    public static Card[] isFullHouse(Card ... params) {
+        //TODO
+        return null;
+    }
+
+    public static Card isPair(Card ... params) {
+        //TODO
+        return null;
+    }
+
+    public static Card[] isTwoPairs(Card ... params) {
+        //TODO
+        return null;
+    }
+
+    public static Card[] isStrightFlush(Card ... params) {
+        //TODO
+        return null;
+    }
+
+    public static Card getHighCardAceLow(Card ... params) {
         if (params.length > 0) {
             int maxIndex = 0;
 
@@ -89,13 +104,13 @@ public class Card implements Comparable {
                 if (!params[maxIndex].isHighCard(params[i])) maxIndex = i;
             }
 
-            return maxIndex;
+            return params[maxIndex];
         }
 
-        return 0; //WTF
+        return null; //WTF
     }
 
-    public static int indexOfHighCardAceHigh(Card ... params) {
+    public static int getHighCardAceHigh(Card ... params) {
         //TODO
         return 0;
     }
@@ -163,7 +178,7 @@ public class Card implements Comparable {
         return true;
     }
 
-    public static boolean isStraightAceLowAndHigh(Card ... params) {
+    public static boolean isStraight(Card ... params) {
         //TODO
         return false;
     }
