@@ -266,7 +266,8 @@ public class Card implements Comparable {
         Collections.sort(list);
 
         for (int i = 0; i < list.size() - 2; i++) {
-            if (list.get(i).getValue() - list.get(i + 1).getValue() != -1) return null; //TODO
+            if (list.get(i).getValue() - list.get(i + 1).getValue() != -1)
+                return list.get(list.size() - 1);
         }
 
         return null;
@@ -286,7 +287,8 @@ public class Card implements Comparable {
         Collections.sort(list);
 
         for (int i = 0; i < list.size() - 2; i++) {
-            if (list.get(i).getValue() - list.get(i + 1).getValue() != -1) return null; //TODO
+            if (list.get(i).getValue() - list.get(i + 1).getValue() != -1)
+                return list.get(list.size() - 1);
         }
 
         return null;
@@ -336,7 +338,6 @@ public class Card implements Comparable {
 
         return 0;
     }
-
 
     /**
      *
