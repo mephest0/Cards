@@ -175,7 +175,7 @@ public class Card implements Comparable {
      */
     public static Card isStraightFlush(Card ... params) {
         if (isFlush(params))
-            return isStraightAceHigh(params);
+            return isStraight(params);
         return null;
     }
 
