@@ -140,7 +140,7 @@ public class Card implements Comparable {
     /**
      * Ace is high
      * @param params
-     * @return <code>null</code> if no pairs, otherwise one <code>Card</code> from each pair
+     * @return <code>null</code> if no pairs, otherwise one <code>Card</code> from each pair, first <code>Card</code> is from largest pair
      */
     public static Card[] isTwoPairs(Card ... params) {
         Card pair1 = null;
