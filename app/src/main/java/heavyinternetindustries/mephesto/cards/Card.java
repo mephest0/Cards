@@ -260,7 +260,7 @@ public class Card implements Comparable {
      * @param params Cards to check
      * @return Highest card in straight
      */
-    public static Card isStraightAceLow(Card ... params) {
+    private static Card isStraightAceLow(Card ... params) {
         ArrayList<Card> list = new ArrayList<>();
         for (Card card : params) list.add(card);
 
@@ -268,10 +268,10 @@ public class Card implements Comparable {
 
         for (int i = 0; i < list.size() - 2; i++) {
             if (list.get(i).getValue() - list.get(i + 1).getValue() != -1)
-                return list.get(list.size() - 1);
+                return null;
         }
 
-        return null;
+        return list.get(list.size() - 1);
     }
 
     /**
@@ -279,7 +279,7 @@ public class Card implements Comparable {
      * @param params Cards to check
      * @return Highest card in straight
      */
-    public static Card isStraightAceHigh(Card ... params) {
+    private static Card isStraightAceHigh(Card ... params) {
         ArrayList<Card> list = new ArrayList<>();
         for (Card card : params) list.add(card.copy()); //Copies card, to set ace high
 
@@ -289,10 +289,10 @@ public class Card implements Comparable {
 
         for (int i = 0; i < list.size() - 2; i++) {
             if (list.get(i).getValue() - list.get(i + 1).getValue() != -1)
-                return list.get(list.size() - 1);
+                return null;
         }
 
-        return null;
+        return list.get(list.size() - 1);
     }
 
     /**
