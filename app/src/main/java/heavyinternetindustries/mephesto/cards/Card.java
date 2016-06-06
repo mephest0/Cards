@@ -132,6 +132,9 @@ public class Card implements Comparable {
             }
         }
 
+        if (ret != null)
+            ret.setAceLow();
+
         return ret;
     }
 
