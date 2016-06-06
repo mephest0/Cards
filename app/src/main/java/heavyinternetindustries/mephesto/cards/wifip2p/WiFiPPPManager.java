@@ -73,7 +73,11 @@ public class WiFiPPPManager {
             @Override
             public void onFailure(int reason) {
                 System.out.println("discovery NOT STARTED, because (reasons): " + reason);
-                //TODO if (reason == xxx)
+
+                if (reason == WifiP2pManager.P2P_UNSUPPORTED) System.out.println("P2P unsupported");
+                else if (reason == WifiP2pManager.ERROR) System.out.println("Error");
+                else if (reason == WifiP2pManager.BUSY) System.out.println("Busy");
+
                 activity.setDiscoverableSwitch(false);
             }
         });
