@@ -52,5 +52,10 @@ public class GameManager {
             rules.update(message);
         else
             System.out.println("wrong tick in update from network");
+        updateUI();
+    }
+
+    private void updateUI() {
+        System.out.println("UPDATE UI HERE!");
     }
 }
