@@ -66,7 +66,7 @@ public class Card implements Comparable {
 
     /**
      * @param other
-     * @return This card is higher that <code>other</code>
+     * @return This card is higher than <code>other</code>
      */
     private boolean isHighCard(Card other) {
         if (this.getValue() == other.getValue()) {
@@ -76,26 +76,51 @@ public class Card implements Comparable {
         }
     }
 
+    /**
+     * If there is a full house, this method returns two cards. The first card occurs three times, second occurs twice.
+     * @param params
+     * @return <code>null</code> if no full house, otherwise an array of two <code>Card</code>s
+     */
     public static Card[] isFullHouse(Card ... params) {
         //TODO
         return null;
     }
 
+    /**
+     *
+     * @param params
+     * @return <code>null</code> if no pairs, otherwise one of the <code>Card</code>s in the pair
+     */
     public static Card isPair(Card ... params) {
         //TODO
         return null;
     }
 
+    /**
+     *
+     * @param params
+     * @return <code>null</code> if no pairs, otherwise one <code>Card</code> from each pair
+     */
     public static Card[] isTwoPairs(Card ... params) {
         //TODO
         return null;
     }
 
+    /**
+     *
+     * @param params
+     * @return <code>null</code> if no straight flush, otherwise the highest <code>Card</code> in straight
+     */
     public static Card[] isStrightFlush(Card ... params) {
         //TODO
         return null;
     }
 
+    /**
+     * Ace counts as 1.
+     * @param params
+     * @return highest card in series
+     */
     public static Card getHighCardAceLow(Card ... params) {
         if (params.length > 0) {
             int maxIndex = 0;
@@ -110,6 +135,11 @@ public class Card implements Comparable {
         return null; //WTF
     }
 
+    /**
+     * Ace counts as 14.
+     * @param params
+     * @return highest card in series
+     */
     public static int getHighCardAceHigh(Card ... params) {
         //TODO
         return 0;
@@ -133,6 +163,11 @@ public class Card implements Comparable {
         return true;
     }
 
+    /**
+     *
+     * @param params
+     * @return <code>true</code> if all <code>Card</code>s are same suit
+     */
     public boolean isFlush(Card ... params) {
         if (params.length < 1) return false;
 
@@ -148,22 +183,27 @@ public class Card implements Comparable {
     /**
      * Checks if cards are sequential, with no doubles. Ace counts as 1. This method takes any number of cards
      * @param params Cards to check
-     * @return <code>true</code> if <bold>all</bold> cards are sequential
+     * @return Highest card in straight
      */
-    public static boolean isStraightAceLow(Card ... params) {
+    public static Card isStraightAceLow(Card ... params) {
         ArrayList<Card> list = new ArrayList<>();
         for (Card card : params) list.add(card);
 
         Collections.sort(list);
 
         for (int i = 0; i < list.size() - 2; i++) {
-            if (list.get(i).getValue() - list.get(i + 1).getValue() != -1) return false;
+            if (list.get(i).getValue() - list.get(i + 1).getValue() != -1) return null; //TODO
         }
 
-        return true;
+        return null;
     }
 
-    public static boolean isStraightAceHigh(Card ... params) {
+    /**
+     * Checks if cards are sequential, with no doubles. Ace counts as 14. This method takes any number of cards
+     * @param params Cards to check
+     * @return Highest card in straight
+     */
+    public static Card isStraightAceHigh(Card ... params) {
         ArrayList<Card> list = new ArrayList<>();
         for (Card card : params) list.add(card.copy()); //Copies card, to set ace high
 
@@ -172,12 +212,17 @@ public class Card implements Comparable {
         Collections.sort(list);
 
         for (int i = 0; i < list.size() - 2; i++) {
-            if (list.get(i).getValue() - list.get(i + 1).getValue() != -1) return false;
+            if (list.get(i).getValue() - list.get(i + 1).getValue() != -1) return null; //TODO
         }
 
-        return true;
+        return null;
     }
 
+    /**
+     *
+     * @param params
+     * @return Highest card in straight, <code>null</code> if there is not a straight
+     */
     public static boolean isStraight(Card ... params) {
         //TODO
         return false;
@@ -192,6 +237,10 @@ public class Card implements Comparable {
         return ret;
     }
 
+    /**
+     *
+     * @return Id for image resource for this <code>Card</code>
+     */
     public int getResource() {
         return getResource(this);
     }
@@ -211,6 +260,11 @@ public class Card implements Comparable {
         return 0;
     }
 
+
+    /**
+     *
+     * @return Id for image resource for this <code>Card</code>
+     */
     public static int getResource(Card card) {
         if (card.getSuit() == SPADES) {
             if (card.getValue() == _10) return R.drawable.s10;
