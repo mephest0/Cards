@@ -214,6 +214,7 @@ public class Card implements Comparable {
                 if (!params[maxIndex].isHighCard(params[i])) maxIndex = i;
             }
 
+            for (Card card : params) card.setAceLow();
             return params[maxIndex];
         }
 
