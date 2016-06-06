@@ -169,7 +169,7 @@ public class Card implements Comparable {
     }
 
     /**
-     * Ace high
+     * Ace high and low
      * @param params
      * @return <code>null</code> if no straight flush, otherwise the highest <code>Card</code> in straight
      */
