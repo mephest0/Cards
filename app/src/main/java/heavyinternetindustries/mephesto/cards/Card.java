@@ -34,22 +34,19 @@ public class Card implements Comparable {
     public static int _QUEEN = _Q;
     public static int _KING = _K;
 
-    private int value;
+    private int suit, value;
 
     public Card(int suit, int value) {
-        this(suit * 13 + value);
-    }
-
-    public Card(int value) {
+        this.suit = suit;
         this.value = value;
     }
 
     public int getValue() {
-        return value % 13;
+        return value;
     }
 
     public int getSuit() {
-        return value / 13;
+        return suit;
     }
 
     private void setAceHigh() {
