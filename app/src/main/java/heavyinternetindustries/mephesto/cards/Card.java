@@ -82,7 +82,38 @@ public class Card implements Comparable {
      * @return <code>null</code> if no full house, otherwise an array of two <code>Card</code>s
      */
     public static Card[] isFullHouse(Card ... params) {
-        //TODO
+        if (params.length <= 5) return null;
+        Card three = null;
+        Card two = null;
+
+        for (Card i : params) {
+            for (Card j : params) {
+                for (Card k : params) {
+                    if (i != j && j != k && k != i) { //no cards can be the same
+                        if (isPair(i, j, k) != null) { //look for three of a kind
+                            if (three == null) three = i; //no null-comparisons
+                            if (three.compareTo(i) < 0) three = i; //save highest card
+                        }
+                    }
+                }
+            }
+        }
+
+        if (three != null) {
+            for (Card i : params) {
+                for (Card j : params) {
+                    if (i != j) {
+                        if (isPair(i, j)) {
+                            if (two == null) two = i;
+                            if (two.compareTo(i) < 0) two = i;
+                        }
+                    }
+                }
+            }
+
+            if (two != null) return new Card[]{three, two};
+        }
+
         return null;
     }
 
@@ -138,7 +169,7 @@ public class Card implements Comparable {
     }
 
     /**
-     *
+     * Ace high
      * @param params
      * @return <code>null</code> if no straight flush, otherwise the highest <code>Card</code> in straight
      */
