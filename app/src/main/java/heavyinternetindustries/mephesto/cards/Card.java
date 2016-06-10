@@ -29,10 +29,6 @@ public class Card implements Comparable {
     public static int _Q = 11;
     public static int _K = 12;
 
-    public static int _ACE = _A;
-    public static int _JACK = _J;
-    public static int _QUEEN = _Q;
-    public static int _KING = _K;
 
     private int suit, value;
 
